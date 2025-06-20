@@ -53,6 +53,8 @@ public class ProductoListaView extends JInternalFrame {
     }
 
 
+
+
     public JComboBox<String> getComboFiltro() { return comboFiltro; }
     public JTextField getTxtBusqueda()       { return txtBusqueda; }
     public JButton getBtnBuscar()            { return btnBuscar; }
