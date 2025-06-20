@@ -19,6 +19,7 @@ public class Main {
             ProductoElimView elim         = new ProductoElimView(dao);
             CarritoAñadirView carritoView = new CarritoAñadirView();
 
+
             ProductoController prodCtrl = new ProductoController(alta, dao, lista);
             prodCtrl.setProductoMod(mod);
             prodCtrl.setProductoElimView(elim);

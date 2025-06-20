@@ -20,6 +20,7 @@ public class CarritoAñadirView extends JInternalFrame {
     private JTextField txtIva;
     private JTextField txtTotal;
 
+
     public CarritoAñadirView() {
         super("Añadir al Carrito", true, true, true, true);
         initComponents();

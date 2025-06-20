@@ -49,6 +49,7 @@ public class Principal extends JInternalFrame {
         setSize(800, 600);
     }
 
+
     public JMenuItem getMenuItemCrearProducto() {
         return menuItemCrearProducto;
     }
