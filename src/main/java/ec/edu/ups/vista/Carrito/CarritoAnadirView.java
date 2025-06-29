@@ -1,10 +1,10 @@
-package ec.edu.ups.vista;
+package ec.edu.ups.vista.Carrito;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
-public class CarritoAñadirView extends JInternalFrame {
+public class CarritoAnadirView extends JInternalFrame {
     private JPanel panelPrincipal;
     private JTextField txtCodigo;
     private JButton btnBuscar;
@@ -21,7 +21,7 @@ public class CarritoAñadirView extends JInternalFrame {
     private JTextField txtTotal;
 
 
-    public CarritoAñadirView() {
+    public CarritoAnadirView() {
         super("Añadir al Carrito", true, true, true, true);
         initComponents();
         setContentPane(panelPrincipal);

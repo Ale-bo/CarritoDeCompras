@@ -1,4 +1,4 @@
-package ec.edu.ups.vista;
+package ec.edu.ups.vista.Usuario;
 
 import javax.swing.*;
 public class LoginView extends JFrame{

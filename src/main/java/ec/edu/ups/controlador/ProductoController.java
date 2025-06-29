@@ -2,7 +2,11 @@ package ec.edu.ups.controlador;
 
 import ec.edu.ups.dao.ProductoDAO;
 import ec.edu.ups.modelo.Producto;
-import ec.edu.ups.vista.*;
+import ec.edu.ups.vista.Carrito.CarritoAnadirView;
+import ec.edu.ups.vista.Producto.ProductoElimView;
+import ec.edu.ups.vista.Producto.ProductoListaView;
+import ec.edu.ups.vista.Producto.ProductoModView;
+import ec.edu.ups.vista.Producto.ProductoView;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -16,7 +20,7 @@ public class ProductoController {
     private ProductoListaView productoListaView;
     private ProductoModView productoMod;
     private ProductoElimView productoElimView;
-    private CarritoAñadirView carritoView;
+    private CarritoAnadirView carritoView;
 
     public ProductoController(ProductoView productoView,
                               ProductoDAO productoDAO,
@@ -158,7 +162,7 @@ public class ProductoController {
         });
     }
 
-    public void setCarritoView(CarritoAñadirView view) {
+    public void setCarritoView(CarritoAnadirView view) {
         this.carritoView = view;
         view.getBtnBuscar().addActionListener(e -> {
             try {

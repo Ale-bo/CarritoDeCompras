@@ -1,7 +1,7 @@
 package ec.edu.ups.controlador;
 
 import ec.edu.ups.modelo.Producto;
-import ec.edu.ups.vista.CarritoAñadirView;
+import ec.edu.ups.vista.Carrito.CarritoAnadirView;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -10,11 +10,11 @@ import java.util.List;
 
 public class CarritoController {
 
-    private final CarritoAñadirView view;
+    private final CarritoAnadirView view;
     private final ProductoController prodCtrl;
     private final List<ItemCarrito> carritoItems = new ArrayList<>();
 
-    public CarritoController(CarritoAñadirView view, ProductoController prodCtrl) {
+    public CarritoController(CarritoAnadirView view, ProductoController prodCtrl) {
         this.view = view;
         this.prodCtrl = prodCtrl;
         configurarListeners();

@@ -5,7 +5,7 @@ package ec.edu.ups.dao;
 
 public interface UsuarioDAO {
 
-    void autenticar(String username, String contrasenia);
+    Usuario autenticar(String username, String contrasenia);
 
     void crear(Usuario usuario);
 
