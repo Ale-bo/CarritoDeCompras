@@ -1,4 +1,5 @@
 package ec.edu.ups.dao;
+ import ec.edu.ups.modelo.Rol;
  import ec.edu.ups.modelo.Usuario;
 
  import java.util.List;
@@ -17,7 +18,5 @@ public interface UsuarioDAO {
 
     List<Usuario> listarTodos();
 
-    List<Usuario> listarAdministradores();
-
-    List<Usuario> listarUsuarios();
+    List<Usuario> listarPorRol(Rol rol);
 }

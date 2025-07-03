@@ -1,8 +1,8 @@
 package ec.edu.ups.dao.impl;
-
 import ec.edu.ups.dao.UsuarioDAO;
 import ec.edu.ups.modelo.Rol;
 import ec.edu.ups.modelo.Usuario;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -11,7 +11,7 @@ public class UsuarioDAOMemoria implements UsuarioDAO {
 
     private List<Usuario> usuarios;
 
-    public UsuarioDAOMemoria(){
+    public UsuarioDAOMemoria() {
         usuarios = new ArrayList<Usuario>();
         crear(new Usuario("admin", "12345", Rol.ADMINISTRADOR));
         crear(new Usuario("user", "12345", Rol.USUARIO));
@@ -19,7 +19,7 @@ public class UsuarioDAOMemoria implements UsuarioDAO {
 
     @Override
     public Usuario autenticar(String username, String contrasenia) {
-        for (Usuario usuario : usuarios){
+        for (Usuario usuario : usuarios) {
             if(usuario.getUsername().equals(username) && usuario.getContrasenia().equals(contrasenia)){
                 return usuario;
             }
@@ -44,15 +44,14 @@ public class UsuarioDAOMemoria implements UsuarioDAO {
 
     @Override
     public void eliminar(String username) {
-        Iterator<Usuario> interator = usuarios.iterator();
-        while(interator.hasNext()){
-            Usuario usuario = interator.next();
-            if(usuario.getUsername().equals(username)){
-                interator.remove();
+        Iterator<Usuario> iterator = usuarios.iterator();
+        while (iterator.hasNext()) {
+            Usuario usuario = iterator.next();
+            if (usuario.getUsername().equals(username)) {
+                iterator.remove();
                 break;
             }
         }
-
     }
 
     @Override
@@ -68,16 +67,19 @@ public class UsuarioDAOMemoria implements UsuarioDAO {
 
     @Override
     public List<Usuario> listarTodos() {
-        return List.of();
+        return usuarios;
     }
 
     @Override
-    public List<Usuario> listarAdministradores() {
-        return List.of();
-    }
+    public List<Usuario> listarPorRol(Rol rol) {
+        List<Usuario> usuariosEncontrados = new ArrayList<>();
 
-    @Override
-    public List<Usuario> listarUsuarios() {
-        return List.of();
+        for (Usuario usuario : usuarios) {
+            if (usuario.getRol().equals(rol)) {
+                usuariosEncontrados.add(usuario);
+            }
+        }
+
+        return usuariosEncontrados;
     }
 }

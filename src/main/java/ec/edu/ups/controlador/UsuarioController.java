@@ -1,8 +1,7 @@
 package ec.edu.ups.controlador;
-
 import ec.edu.ups.dao.UsuarioDAO;
 import ec.edu.ups.modelo.Usuario;
-import ec.edu.ups.vista.Usuario.LoginView;
+import ec.edu.ups.vista.LoginView;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

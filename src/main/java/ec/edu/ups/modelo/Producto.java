@@ -1,5 +1,4 @@
 package ec.edu.ups.modelo;
-
 public class Producto {
     private int codigo;
     private String nombre;
@@ -40,8 +39,6 @@ public class Producto {
 
     @Override
     public String toString() {
-        return nombre + " - $" + precio;
+        return codigo + " - " + nombre + " - $" + precio;
     }
-
 }
-
