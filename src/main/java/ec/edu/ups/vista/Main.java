@@ -12,7 +12,7 @@ import ec.edu.ups.dao.impl.UsuarioDAOMemoria;
 import ec.edu.ups.modelo.Rol;
 import ec.edu.ups.modelo.Usuario;
 import ec.edu.ups.util.MensajeInternacionalizacionHandler;
-import ec.edu.ups.vista.Carrito.AñadirCarritoView;
+import ec.edu.ups.vista.Carrito.AnadirCarritoView;
 import ec.edu.ups.vista.Producto.AnadirProductoView;
 import ec.edu.ups.vista.Producto.ListarProductoView;
 
@@ -51,7 +51,7 @@ public class Main {
                             MenuPrincipalView principalView = new MenuPrincipalView(mIH);
                             AnadirProductoView productoAnadirView = new AnadirProductoView();
                             ListarProductoView productoListaView = new ListarProductoView();
-                            AñadirCarritoView carritoAnadirView = new AñadirCarritoView();
+                            AnadirCarritoView carritoAnadirView = new AnadirCarritoView();
 
 
                             //instanciamos Controladores

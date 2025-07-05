@@ -5,7 +5,6 @@ import ec.edu.ups.util.MensajeInternacionalizacionHandler;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 
 public class ActualizarCarritoView extends JInternalFrame {
 
@@ -14,82 +13,62 @@ public class ActualizarCarritoView extends JInternalFrame {
 
     private JPanel panelPrincipal;
     private JTextField txtCodigo;
+    private JTextField txtCantidad;
     private JButton btnBuscar;
-    private JButton btnCancelar;
-    private JTextField txtTotal;
     private JButton btnActualizar;
-    private JTable tabla;
+    private JButton btnCancelar;
+    private JTable tblCarritos;
     private DefaultTableModel modelo;
+    private JLabel lblCodigo;
+    private JLabel lblCantidad;
 
-    public ActualizarCarritoView(CarritoController controller, MensajeInternacionalizacionHandler mensajeHandler) {
-        this.carritoController = controller;
+    public ActualizarCarritoView(CarritoController carritoController, MensajeInternacionalizacionHandler mensajeHandler) {
+        this.carritoController = carritoController;
         this.mensajeHandler = mensajeHandler;
 
+        setContentPane(panelPrincipal);
         setClosable(true);
         setIconifiable(true);
         setResizable(true);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setSize(600, 400);
-        setLocation(30, 30);
 
-        initComponents();
-        setContentPane(panelPrincipal);
+        modelo = (DefaultTableModel) tblCarritos.getModel();
+
         actualizarIdioma();
 
-        btnBuscar.addActionListener(e -> carritoController.buscarCarritoParaActualizar());
+        // Delegando la carga de carritos al controlador
+        btnBuscar.addActionListener(e -> carritoController.cargarTablaMod());
         btnActualizar.addActionListener(e -> carritoController.actualizarCarrito());
-        btnCancelar.addActionListener(e -> carritoController.cancelarActualizacion());
-    }
-
-    private void initComponents() {
-        panelPrincipal = new JPanel(new BorderLayout());
-
-        JPanel panelSuperior = new JPanel(new FlowLayout());
-        JLabel lblCodigo = new JLabel("Código:");
-        txtCodigo = new JTextField(10);
-        btnBuscar = new JButton();
-        panelSuperior.add(lblCodigo);
-        panelSuperior.add(txtCodigo);
-        panelSuperior.add(btnBuscar);
-
-        modelo = new DefaultTableModel(new Object[]{"Código", "Usuario", "Total"}, 0);
-        tabla = new JTable(modelo);
-        JScrollPane scroll = new JScrollPane(tabla);
-
-        JPanel panelInferior = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JLabel lblTotal = new JLabel("Total:");
-        txtTotal = new JTextField(10);
-        txtTotal.setEditable(false);
-        btnActualizar = new JButton();
-        btnCancelar = new JButton();
-
-        panelInferior.add(lblTotal);
-        panelInferior.add(txtTotal);
-        panelInferior.add(btnActualizar);
-        panelInferior.add(btnCancelar);
-
-        panelPrincipal.add(panelSuperior, BorderLayout.NORTH);
-        panelPrincipal.add(scroll, BorderLayout.CENTER);
-        panelPrincipal.add(panelInferior, BorderLayout.SOUTH);
+        btnCancelar.addActionListener(e -> limpiarCampos());
     }
 
     public void actualizarIdioma() {
         setTitle(mensajeHandler.get("carrito.view.modificar.titulo"));
+        lblCodigo.setText(mensajeHandler.get("carrito.view.modificar.codigo"));
+        lblCantidad.setText(mensajeHandler.get("carrito.view.modificar.cantidad"));
         btnBuscar.setText(mensajeHandler.get("carrito.view.modificar.buscar"));
         btnActualizar.setText(mensajeHandler.get("carrito.view.modificar.actualizar"));
         btnCancelar.setText(mensajeHandler.get("carrito.view.modificar.cancelar"));
+
+        modelo.setColumnIdentifiers(new Object[]{
+                mensajeHandler.get("carrito.view.modificar.codigo"),
+                mensajeHandler.get("carrito.view.modificar.nombre"),
+                mensajeHandler.get("carrito.view.modificar.precio"),
+                mensajeHandler.get("carrito.view.modificar.cantidad")
+        });
     }
 
     public JTextField getTxtCodigo() {
         return txtCodigo;
     }
 
-    public JButton getBtnBuscar() {
-        return btnBuscar;
+    public JTextField getTxtCantidad() {
+        return txtCantidad;
     }
 
-    public JTable getTabla() {
-        return tabla;
+    public JButton getBtnBuscar() {
+        return btnBuscar;
     }
 
     public JButton getBtnActualizar() {
@@ -100,16 +79,22 @@ public class ActualizarCarritoView extends JInternalFrame {
         return btnCancelar;
     }
 
-    public JTextField getTxtTotal() {
-        return txtTotal;
+    public JTable getTableCarritos() {
+        return tblCarritos;
     }
 
-    public DefaultTableModel getModelo() {
+    public DefaultTableModel getTableModel() {
         return modelo;
     }
 
     public void mostrarMensaje(String mensaje) {
         JOptionPane.showMessageDialog(this, mensaje);
     }
+
+    public void limpiarCampos() {
+        txtCodigo.setText("");
+        txtCantidad.setText("");
+    }
 }
+
 

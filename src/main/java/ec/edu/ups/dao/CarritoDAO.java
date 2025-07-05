@@ -1,13 +1,13 @@
 package ec.edu.ups.dao;
 
-import ec.edu.ups.modelo.Carrito;
+import ec.edu.ups.modelo.Carrito.Carrito;
 import java.util.List;
 
 public interface CarritoDAO {
 
     void crear(Carrito carrito);
 
-    int buscarPorCodigo(int codigo);
+    Carrito buscarPorCodigo(int codigo);
 
     void actualizar(Carrito carrito);
 
