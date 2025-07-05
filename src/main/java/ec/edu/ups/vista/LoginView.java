@@ -1,4 +1,4 @@
-package ec.edu.ups.vista.Usuario;
+package ec.edu.ups.vista;
 
 import javax.swing.*;
 public class LoginView extends JFrame{
@@ -58,7 +58,7 @@ public class LoginView extends JFrame{
         this.btnIniciarSesion = btnIniciarSesion;
     }
 
-    public JButton getBtnRegistrarse() {
+    public JButton getBtnRegistrar () {
         return btnRegistrarse;
     }
 
@@ -68,5 +68,10 @@ public class LoginView extends JFrame{
 
     public void mostrarMensaje(String mensaje) {
         JOptionPane.showMessageDialog(this, mensaje);
+    }
+
+    public void limpiarCampos() {
+        txtUsername.setText("");
+        txtContrasenia.setText("");
     }
 }

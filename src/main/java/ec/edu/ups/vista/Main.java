@@ -11,16 +11,15 @@ import ec.edu.ups.dao.impl.ProductoDAOMemoria;
 import ec.edu.ups.dao.impl.UsuarioDAOMemoria;
 import ec.edu.ups.modelo.Rol;
 import ec.edu.ups.modelo.Usuario;
-import ec.edu.ups.vista.Producto.ProductoListaView;
-import ec.edu.ups.vista.Usuario.LoginView;
-import ec.edu.ups.vista.Producto.ProductoAnadirView;
-import ec.edu.ups.vista.Carrito.CarritoAnadirView;
+import ec.edu.ups.util.MensajeInternacionalizacionHandler;
+import ec.edu.ups.vista.Carrito.AñadirCarritoView;
+import ec.edu.ups.vista.Producto.AnadirProductoView;
+import ec.edu.ups.vista.Producto.ListarProductoView;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 
 public class Main {
     public static void main(String[] args) {
@@ -40,15 +39,19 @@ public class Main {
 
                         Usuario usuarioAuntenticado = usuarioController.getUsuarioAutenticado();
                         if (usuarioAuntenticado != null) {
+
+                            //instanciamos MensajeHandler (Singleton)
+                            MensajeInternacionalizacionHandler mIH = new MensajeInternacionalizacionHandler("es", "EC");
+
                             //instanciamos DAO (Singleton)
                             ProductoDAO productoDAO = new ProductoDAOMemoria();
                             CarritoDAO carritoDAO = new CarritoDAOMemoria();
 
                             //instancio Vistas
-                            MenuPrincipalView principalView = new MenuPrincipalView();
-                            ProductoAnadirView productoAnadirView = new ProductoAnadirView();
-                            ProductoListaView productoListaView = new ProductoListaView();
-                            CarritoAnadirView carritoAnadirView = new CarritoAnadirView();
+                            MenuPrincipalView principalView = new MenuPrincipalView(mIH);
+                            AnadirProductoView productoAnadirView = new AnadirProductoView();
+                            ListarProductoView productoListaView = new ListarProductoView();
+                            AñadirCarritoView carritoAnadirView = new AñadirCarritoView();
 
 
                             //instanciamos Controladores
@@ -87,6 +90,27 @@ public class Main {
                                         carritoAnadirView.setVisible(true);
                                         principalView.getjDesktopPane().add(carritoAnadirView);
                                     }
+                                }
+                            });
+
+                            principalView.getMenuItemIdiomaEspanol().addActionListener(new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    principalView.cambiarIdioma("es", "EC");
+                                }
+                            });
+
+                            principalView.getMenuItemIdiomaIngles().addActionListener(new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    principalView.cambiarIdioma("en", "US");
+                                }
+                            });
+
+                            principalView.getMenuItemIdiomaFrances().addActionListener(new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    principalView.cambiarIdioma("fr", "FR");
                                 }
                             });
                         }
