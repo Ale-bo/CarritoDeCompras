@@ -12,6 +12,10 @@ public class ListarCarritoView extends JInternalFrame {
     private JTextField txtBuscar;
     private JButton btnBuscar;
     private JButton btnListar;
+    private JPanel panel1;
+    private JTextField Codigo;
+    private JTextField textTotal;
+    private JTable table1;
     private JTable tablaCarritos;
 
     private DefaultTableModel modelo;

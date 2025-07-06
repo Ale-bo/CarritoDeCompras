@@ -17,6 +17,9 @@ public class ActualizarCarritoView extends JInternalFrame {
     private JButton btnBuscar;
     private JButton btnActualizar;
     private JButton btnCancelar;
+    private JTextField textCodigo;
+    private JTextField txtTotal;
+    private JTable table1;
     private JTable tblCarritos;
     private DefaultTableModel modelo;
     private JLabel lblCodigo;

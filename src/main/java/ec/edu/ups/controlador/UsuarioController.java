@@ -26,13 +26,7 @@ public class UsuarioController {
     private final ActualizarUsuarioView actualizarUsuarioView;
     private final RecuperarContraseñaView recuperarContraseñaView;
 
-    public UsuarioController(UsuarioDAO usuarioDAO,
-                             LoginView loginView,
-                             RegistrarUsuarioView registrarUsuarioView,
-                             ListarUsuarioView listarUsuarioView,
-                             EliminarUsuarioView eliminarUsuarioView,
-                             ActualizarUsuarioView actualizarUsuarioView,
-                             RecuperarContraseñaView recuperarContraseñaView) {
+    public UsuarioController(UsuarioDAO usuarioDAO, LoginView loginView, RegistrarUsuarioView registrarUsuarioView, ListarUsuarioView listarUsuarioView, EliminarUsuarioView eliminarUsuarioView, ActualizarUsuarioView actualizarUsuarioView, RecuperarContraseñaView recuperarContraseñaView) {
         this.usuarioDAO = usuarioDAO;
         this.loginView = loginView;
         this.registrarUsuarioView = registrarUsuarioView;

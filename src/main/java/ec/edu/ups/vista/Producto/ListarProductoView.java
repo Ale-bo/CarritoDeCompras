@@ -12,6 +12,8 @@ public class ListarProductoView extends JInternalFrame {
     private JTextField txtBuscar;
     private JButton btnBuscar;
     private JButton btnListar;
+    private JLabel lblNombre;
+    private JTable tblProductos;
     private JTable tablaProductos;
 
     private DefaultTableModel modelo;

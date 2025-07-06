@@ -4,6 +4,7 @@ import ec.edu.ups.util.MensajeInternacionalizacionHandler;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.util.MissingResourceException;
 
 public class ListarUsuarioView extends JInternalFrame {
 
@@ -21,6 +22,9 @@ public class ListarUsuarioView extends JInternalFrame {
     public ListarUsuarioView(MensajeInternacionalizacionHandler mensajeHandler) {
         this.mensajeHandler = mensajeHandler;
 
+        // Inicializar el comboBox
+        cbxFiltro = new JComboBox<>(); // Asegúrate de inicializarlo aquí
+
         setContentPane(panelPrincipal);
         setClosable(true);
         setIconifiable(true);
@@ -34,17 +38,29 @@ public class ListarUsuarioView extends JInternalFrame {
         actualizarIdioma(); // Actualizar los textos y etiquetas según el idioma seleccionado
     }
 
+
     // Método para actualizar los textos y etiquetas de la interfaz con los valores en el idioma seleccionado
     public void actualizarIdioma() {
         if (mensajeHandler == null) return;
 
-        setTitle(mensajeHandler.get("usuario.view.listar.titulo"));
-        btnBuscar.setText(mensajeHandler.get("usuario.view.listar.buscar"));
-        btnRefrescar.setText(mensajeHandler.get("usuario.view.listar.refrescar"));
+        try {
+            setTitle(mensajeHandler.get("usuario.view.listar.titulo"));
+            btnBuscar.setText(mensajeHandler.get("usuario.view.listar.buscar"));
+            btnRefrescar.setText(mensajeHandler.get("usuario.view.listar.refrescar"));
 
-        cbxFiltro.removeAllItems();
-        cbxFiltro.addItem(mensajeHandler.get("usuario.view.eliminar.filtro.username"));
-        cbxFiltro.addItem(mensajeHandler.get("usuario.view.eliminar.filtro.rol"));
+            cbxFiltro.removeAllItems();
+            cbxFiltro.addItem(mensajeHandler.get("usuario.view.eliminar.filtro.username"));
+            cbxFiltro.addItem(mensajeHandler.get("usuario.view.eliminar.filtro.rol"));
+        } catch (MissingResourceException e) {
+            // Detalles de la clave faltante
+            System.err.println("Error: La clave '" + e.getKey() + "' no fue encontrada en el archivo de propiedades.");
+            // Retorna los textos predeterminados si no se encuentran las claves
+            setTitle("Listar Usuarios");
+            btnBuscar.setText("Buscar Usuario");
+            btnRefrescar.setText("Refrescar Lista");
+            cbxFiltro.addItem("Username");
+            cbxFiltro.addItem("Role");
+        }
     }
 
     // Métodos para acceder a los datos de la vista

@@ -18,6 +18,11 @@ public class EliminarCarritoView extends JInternalFrame {
     private DefaultTableModel modelo;
     private final CarritoController carritoController;
     private final MensajeInternacionalizacionHandler mensajes;
+    private JLabel CodigoDeUsuario;
+    private JTextField Codigo;
+    private JButton buscarButton;
+    private JButton eliminarButton;
+    private JTable table1;
 
     public EliminarCarritoView(CarritoController carritoController, MensajeInternacionalizacionHandler mensajes) {
         super("", true, true, true, true);

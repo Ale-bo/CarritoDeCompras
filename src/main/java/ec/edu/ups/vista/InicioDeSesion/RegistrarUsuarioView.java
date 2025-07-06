@@ -4,7 +4,7 @@ import ec.edu.ups.util.MensajeInternacionalizacionHandler;
 
 import javax.swing.*;
 
-public class RegistrarUsuarioView extends JInternalFrame {
+public class RegistrarUsuarioView extends JFrame {
 
     private MensajeInternacionalizacionHandler mensajeHandler;
 
@@ -32,11 +32,9 @@ public class RegistrarUsuarioView extends JInternalFrame {
     public RegistrarUsuarioView() {
         setTitle("Registro de Usuario");
         setContentPane(panelPrincipal);
-        setClosable(true);
-        setIconifiable(true);
-        setResizable(true);
-        setMaximizable(true);
         setSize(600, 500);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setVisible(true);
     }
 

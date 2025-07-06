@@ -19,7 +19,14 @@ public class RecuperarContraseñaView extends JInternalFrame {
 
     // Constructor
     public RecuperarContraseñaView() {
-        setContentPane(panelPrincipal);
+        // Inicializar el panelPrincipal manualmente
+        panelPrincipal = new JPanel();
+        panelPrincipal.setLayout(new BoxLayout(panelPrincipal, BoxLayout.Y_AXIS));  // O el layout que desees
+
+        // Ahora puedes inicializar los otros componentes y agregarlos a panelPrincipal
+        // Ejemplo: panelPrincipal.add(aceptarButton);
+
+        setContentPane(panelPrincipal);  // Establecer el panel principal como el contenido de la ventana
         setClosable(true);
         setIconifiable(true);
         setResizable(true);

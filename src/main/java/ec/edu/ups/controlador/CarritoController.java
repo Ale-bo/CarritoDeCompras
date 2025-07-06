@@ -2,7 +2,7 @@ package ec.edu.ups.controlador;
 
 import ec.edu.ups.dao.CarritoDAO;
 import ec.edu.ups.modelo.Carrito.Carrito;
-import ec.edu.ups.modelo. Carrito.ItemCarrito;
+import ec.edu.ups.modelo.ItemCarrito;
 import ec.edu.ups.modelo.Producto;
 import ec.edu.ups.util.MensajeInternacionalizacionHandler;
 import ec.edu.ups.vista.Carrito.AnadirCarritoView;

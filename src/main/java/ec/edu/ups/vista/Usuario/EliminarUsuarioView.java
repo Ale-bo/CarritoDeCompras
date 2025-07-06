@@ -20,6 +20,9 @@ public class EliminarUsuarioView extends JInternalFrame {
     public EliminarUsuarioView(MensajeInternacionalizacionHandler mensajeHandler) {
         this.mensajeHandler = mensajeHandler;
 
+        // Asegúrate de inicializar el JComboBox
+        cbxFiltro = new JComboBox<>();  // Inicialización del JComboBox
+
         setContentPane(panelPrincipal);
         setClosable(true);
         setIconifiable(true);
@@ -32,6 +35,7 @@ public class EliminarUsuarioView extends JInternalFrame {
 
         actualizarIdioma(); // Actualiza los textos de la vista
     }
+
 
     // Método para actualizar los textos y etiquetas de la interfaz con los valores en el idioma seleccionado
     public void actualizarIdioma() {

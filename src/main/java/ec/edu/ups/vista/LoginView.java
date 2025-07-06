@@ -2,15 +2,30 @@ package ec.edu.ups.vista;
 
 import javax.swing.*;
 import ec.edu.ups.util.MensajeInternacionalizacionHandler;
+import ec.edu.ups.vista.InicioDeSesion.RegistrarUsuarioView;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class LoginView extends JFrame {
+    private JPanel panel1;  // Declarar el campo aquí
+
+    public LoginView() {
+        setContentPane(panel1);  // Utilizar el campo en el constructor
+        setTitle("Iniciar Sesión");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(600, 400);
+        setLocationRelativeTo(null);
+    }
 
     private JPanel panelPrincipal;
-    private JPanel panelSecundario;
+
     private JTextField txtUsername;
     private JPasswordField txtContrasenia;
     private JButton btnIniciarSesion;
     private JButton btnRegistrarse;
+    private JLabel Usuario;
+    private JLabel Contrasenia;
 
     public LoginView(MensajeInternacionalizacionHandler mensajeHandler) {
         // Configurar el título y la interfaz
@@ -33,44 +48,21 @@ public class LoginView extends JFrame {
         this.panelPrincipal = panelPrincipal;
     }
 
-    public JPanel getPanelSecundario() {
-        return panelSecundario;
-    }
-
-    public void setPanelSecundario(JPanel panelSecundario) {
-        this.panelSecundario = panelSecundario;
-    }
-
     public JTextField getTxtUsername() {
         return txtUsername;
-    }
-
-    public void setTxtUsername(JTextField txtUsername) {
-        this.txtUsername = txtUsername;
     }
 
     public JPasswordField getTxtContrasenia() {
         return txtContrasenia;
     }
 
-    public void setTxtContrasenia(JPasswordField txtContrasenia) {
-        this.txtContrasenia = txtContrasenia;
-    }
 
     public JButton getBtnIniciarSesion() {
         return btnIniciarSesion;
     }
 
-    public void setBtnIniciarSesion(JButton btnIniciarSesion) {
-        this.btnIniciarSesion = btnIniciarSesion;
-    }
-
     public JButton getBtnRegistrarse() {
         return btnRegistrarse;
-    }
-
-    public void setBtnRegistrarse(JButton btnRegistrarse) {
-        this.btnRegistrarse = btnRegistrarse;
     }
 
     public void mostrarMensaje(String mensaje) {
@@ -81,5 +73,6 @@ public class LoginView extends JFrame {
         txtUsername.setText("");
         txtContrasenia.setText("");
     }
+
 }
 
