@@ -1,11 +1,9 @@
 package ec.edu.ups.vista.Usuario;
-
 import ec.edu.ups.util.MensajeInternacionalizacionHandler;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-public class ActualizarUsusarioView extends JInternalFrame {
+public class ActualizarUsuarioView extends JInternalFrame {
 
     private MensajeInternacionalizacionHandler mensajeHandler;
 
@@ -19,10 +17,14 @@ public class ActualizarUsusarioView extends JInternalFrame {
     private JTable tblUsuarios;
     private DefaultTableModel model;
     private JScrollPane scrollPane;
-    private JLabel Contraseña;
     private JLabel NombreDeUsuario;
+    private JLabel Contraseña;
+    private JPasswordField passwordconfcontrasenia;
+    private JLabel ConfContra;
+    private JLabel lblContraseña;
+    private JLabel lblNombreDeUsuario;
 
-    public ActualizarUsusarioView(MensajeInternacionalizacionHandler mensajeHandler) {
+    public ActualizarUsuarioView(MensajeInternacionalizacionHandler mensajeHandler) {
         this.mensajeHandler = mensajeHandler;
 
         setContentPane(panelPrincipal);
@@ -36,6 +38,7 @@ public class ActualizarUsusarioView extends JInternalFrame {
         tblUsuarios.setModel(model);
     }
 
+    // Método para actualizar los textos y etiquetas de la interfaz con los valores en el idioma seleccionado
     public void actualizarIdioma() {
         if (mensajeHandler == null) return;
 
@@ -47,11 +50,12 @@ public class ActualizarUsusarioView extends JInternalFrame {
 
         if (cbxRol != null) {
             cbxRol.removeAllItems();
-            cbxRol.addItem("ADMINISTRADOR");
-            cbxRol.addItem("USUARIO");
+            cbxRol.addItem(mensajeHandler.get("usuario.view.modificar.rol.admin"));
+            cbxRol.addItem(mensajeHandler.get("usuario.view.modificar.rol.usuario"));
         }
     }
 
+    // Métodos para obtener los valores de los campos
     public JTextField getTxtUsername() {
         return txtUsername;
     }
@@ -76,7 +80,7 @@ public class ActualizarUsusarioView extends JInternalFrame {
         return btnCancelar;
     }
 
-    public JTable getTableUsuarios() {
+    public JTable getTblUsuarios() {
         return tblUsuarios;
     }
 
@@ -84,15 +88,22 @@ public class ActualizarUsusarioView extends JInternalFrame {
         return model;
     }
 
+    public JPasswordField getPasswordconfcontrasenia(){
+        return passwordconfcontrasenia;
+    }
+
+
     public void setTableModel(DefaultTableModel model) {
         this.model = model;
         tblUsuarios.setModel(model);
     }
 
+    // Método para mostrar un mensaje en la vista
     public void mostrarMensaje(String mensaje) {
         JOptionPane.showMessageDialog(this, mensaje);
     }
 
+    // Método para limpiar los campos de la vista
     public void limpiarCampos() {
         txtUsername.setText("");
         txtPassword.setText("");

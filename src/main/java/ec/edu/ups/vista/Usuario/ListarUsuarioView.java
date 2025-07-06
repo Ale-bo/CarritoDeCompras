@@ -5,7 +5,7 @@ import ec.edu.ups.util.MensajeInternacionalizacionHandler;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-public class ListarUsusarioView extends JInternalFrame {
+public class ListarUsuarioView extends JInternalFrame {
 
     private MensajeInternacionalizacionHandler mensajeHandler;
 
@@ -18,7 +18,7 @@ public class ListarUsusarioView extends JInternalFrame {
     private JLabel Usuario;
     private JComboBox<String> cbxFiltro;
 
-    public ListarUsusarioView(MensajeInternacionalizacionHandler mensajeHandler) {
+    public ListarUsuarioView(MensajeInternacionalizacionHandler mensajeHandler) {
         this.mensajeHandler = mensajeHandler;
 
         setContentPane(panelPrincipal);
@@ -31,10 +31,13 @@ public class ListarUsusarioView extends JInternalFrame {
         model = new DefaultTableModel(new Object[]{"Username", "Rol"}, 0);
         tblUsuario.setModel(model);
 
-        actualizarIdioma();
+        actualizarIdioma(); // Actualizar los textos y etiquetas según el idioma seleccionado
     }
 
+    // Método para actualizar los textos y etiquetas de la interfaz con los valores en el idioma seleccionado
     public void actualizarIdioma() {
+        if (mensajeHandler == null) return;
+
         setTitle(mensajeHandler.get("usuario.view.listar.titulo"));
         btnBuscar.setText(mensajeHandler.get("usuario.view.listar.buscar"));
         btnRefrescar.setText(mensajeHandler.get("usuario.view.listar.refrescar"));
@@ -44,6 +47,7 @@ public class ListarUsusarioView extends JInternalFrame {
         cbxFiltro.addItem(mensajeHandler.get("usuario.view.eliminar.filtro.rol"));
     }
 
+    // Métodos para acceder a los datos de la vista
     public JComboBox<String> getComboFiltro() {
         return cbxFiltro;
     }
@@ -68,17 +72,23 @@ public class ListarUsusarioView extends JInternalFrame {
         return model;
     }
 
+    // Método para mostrar un mensaje en la vista
+    public void mostrarMensaje(String mensaje) {
+        JOptionPane.showMessageDialog(this, mensaje);
+    }
+
+    // Método para limpiar los campos de búsqueda
+    public void limpiarCampos() {
+        txtBuscar.setText("");
+        cbxFiltro.setSelectedIndex(0);  // Resetear la selección del filtro
+    }
+
+    // Método para actualizar los datos de la tabla desde el controlador
     public void setTableModel(DefaultTableModel model) {
         this.model = model;
         tblUsuario.setModel(model);
     }
-
-    public JPanel getPanel() {
-        return panelPrincipal;
-    }
-
-    public void mostrarMensaje(String mensaje) {
-        JOptionPane.showMessageDialog(this, mensaje);
-    }
 }
+
+
 

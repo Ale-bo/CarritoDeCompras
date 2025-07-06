@@ -30,10 +30,13 @@ public class EliminarUsuarioView extends JInternalFrame {
         model = new DefaultTableModel(new Object[]{"Username", "Rol"}, 0);
         tblUsuarios.setModel(model);
 
-        actualizarIdioma();
+        actualizarIdioma(); // Actualiza los textos de la vista
     }
 
+    // Método para actualizar los textos y etiquetas de la interfaz con los valores en el idioma seleccionado
     public void actualizarIdioma() {
+        if (mensajeHandler == null) return;
+
         setTitle(mensajeHandler.get("usuario.view.eliminar.titulo"));
         btnBuscar.setText(mensajeHandler.get("usuario.view.eliminar.buscar"));
         btnEliminar.setText(mensajeHandler.get("usuario.view.eliminar.eliminar"));
@@ -43,6 +46,7 @@ public class EliminarUsuarioView extends JInternalFrame {
         cbxFiltro.addItem(mensajeHandler.get("usuario.view.eliminar.filtro.rol"));
     }
 
+    // Métodos para acceder a los datos de la vista
     public JTable getTableUsuarios() {
         return tblUsuarios;
     }
@@ -67,15 +71,14 @@ public class EliminarUsuarioView extends JInternalFrame {
         return btnBuscar;
     }
 
-    public JPanel getPanelPrincipal() {
-        return panelPrincipal;
-    }
-
-    public void setTableModel(DefaultTableModel model) {
-        this.model = model;
-    }
-
+    // Método para mostrar un mensaje en la vista
     public void mostrarMensaje(String mensaje) {
         JOptionPane.showMessageDialog(this, mensaje);
+    }
+
+    // Método para limpiar los campos de búsqueda
+    public void limpiarCampos() {
+        txtBuscar.setText("");
+        cbxFiltro.setSelectedIndex(0);  // Resetear la selección del filtro
     }
 }

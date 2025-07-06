@@ -1,6 +1,4 @@
-package ec.edu.ups.modelo.Carrito;
-
-import ec.edu.ups.modelo.Producto;
+package ec.edu.ups.modelo;
 
 public class ItemCarrito {
     private Producto producto;

@@ -1,5 +1,6 @@
 package ec.edu.ups.modelo.Carrito;
 
+import ec.edu.ups.modelo.ItemCarrito;
 import ec.edu.ups.modelo.Producto;
 
 import java.util.ArrayList;

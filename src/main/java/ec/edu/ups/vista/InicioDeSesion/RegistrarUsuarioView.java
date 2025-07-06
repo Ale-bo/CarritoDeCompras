@@ -4,7 +4,7 @@ import ec.edu.ups.util.MensajeInternacionalizacionHandler;
 
 import javax.swing.*;
 
-public class RegistroUsuarioView extends JInternalFrame {
+public class RegistrarUsuarioView extends JInternalFrame {
 
     private MensajeInternacionalizacionHandler mensajeHandler;
 
@@ -29,7 +29,7 @@ public class RegistroUsuarioView extends JInternalFrame {
     private JLabel NombresCompletos;
     private JLabel PreguntasdeSeguridad;
 
-    public RegistroUsuarioView() {
+    public RegistrarUsuarioView() {
         setTitle("Registro de Usuario");
         setContentPane(panelPrincipal);
         setClosable(true);
@@ -40,48 +40,17 @@ public class RegistroUsuarioView extends JInternalFrame {
         setVisible(true);
     }
 
+    // Métodos para acceder a los componentes de la vista
     public JButton getCancelarButton() {
         return cancelarButton;
-    }
-
-    public JLabel getCelular() {
-        return Celular;
     }
 
     public JComboBox getComboBoxPreguntas() {
         return comboBoxPreguntas;
     }
 
-    public JLabel getConfContrasena() {
-        return confContrasena;
-    }
-
-    public JLabel getContrasena() {
-        return Contrasena;
-    }
-
-    public JLabel getCorreoElectronico() {
-        return CorreoElectronico;
-    }
-
-    public JLabel getFechadeNaciemiento() {
-        return FechadeNaciemiento;
-    }
-
-    public MensajeInternacionalizacionHandler getMensajeHandler() {
-        return mensajeHandler;
-    }
-
-    public JLabel getNombresCompletos() {
-        return NombresCompletos;
-    }
-
-    public JLabel getNombreUsusario() {
-        return NombreUsusario;
-    }
-
-    public JPanel getPanelPrincipal() {
-        return panelPrincipal;
+    public JButton getRegistrarButton() {
+        return registrarButton;
     }
 
     public JPasswordField getPasswordconfcontrasena() {
@@ -90,14 +59,6 @@ public class RegistroUsuarioView extends JInternalFrame {
 
     public JPasswordField getPasswordcontrasena() {
         return passwordcontrasena;
-    }
-
-    public JLabel getPreguntasdeSeguridad() {
-        return PreguntasdeSeguridad;
-    }
-
-    public JButton getRegistrarButton() {
-        return registrarButton;
     }
 
     public JTextField getTextcelular() {
@@ -112,31 +73,39 @@ public class RegistroUsuarioView extends JInternalFrame {
         return textnacimiento;
     }
 
-   public JTextField getTextnombre() {
+    public JTextField getTextnombre() {
         return textnombre;
-   }
-
-   public JTextField getTextrespuesta() {
-        return textrespuesta;
-   }
-
-   public JTextField getTextususario() {
-        return textususario;
-   }
-    public void setMensajeHandler(MensajeInternacionalizacionHandler mensajes) {
-        setTitle(mensajes.get("usuario.registro"));
-
-        ((JLabel) panelPrincipal.getComponent(0)).setText(mensajes.get("usuario.nombreCompleto"));
-        ((JLabel) panelPrincipal.getComponent(1)).setText(mensajes.get("usuario.fechaNacimiento"));
-        ((JLabel) panelPrincipal.getComponent(2)).setText(mensajes.get("usuario.correo"));
-        ((JLabel) panelPrincipal.getComponent(3)).setText(mensajes.get("usuario.telefono"));
-        ((JLabel) panelPrincipal.getComponent(4)).setText(mensajes.get("usuario.username"));
-        ((JLabel) panelPrincipal.getComponent(5)).setText(mensajes.get("usuario.contrasenia"));
-        ((JLabel) panelPrincipal.getComponent(6)).setText(mensajes.get("usuario.confirmar"));
-        registrarButton.setText(mensajes.get("usuario.registrar"));
-        cancelarButton.setText(mensajes.get("usuario.cancelar"));
     }
 
+    public JTextField getTextrespuesta() {
+        return textrespuesta;
+    }
+
+    public JTextField getTextususario() {
+        return textususario;
+    }
+
+    // Método para actualizar los textos de la vista según el idioma
+    public void actualizarIdioma(MensajeInternacionalizacionHandler mensajeHandler) {
+        setTitle(mensajeHandler.get("usuario.registro"));
+
+        ((JLabel) panelPrincipal.getComponent(0)).setText(mensajeHandler.get("usuario.nombreCompleto"));
+        ((JLabel) panelPrincipal.getComponent(1)).setText(mensajeHandler.get("usuario.fechaNacimiento"));
+        ((JLabel) panelPrincipal.getComponent(2)).setText(mensajeHandler.get("usuario.correo"));
+        ((JLabel) panelPrincipal.getComponent(3)).setText(mensajeHandler.get("usuario.telefono"));
+        ((JLabel) panelPrincipal.getComponent(4)).setText(mensajeHandler.get("usuario.username"));
+        ((JLabel) panelPrincipal.getComponent(5)).setText(mensajeHandler.get("usuario.contrasenia"));
+        ((JLabel) panelPrincipal.getComponent(6)).setText(mensajeHandler.get("usuario.confirmar"));
+        registrarButton.setText(mensajeHandler.get("usuario.registrar"));
+        cancelarButton.setText(mensajeHandler.get("usuario.cancelar"));
+    }
+
+    // Método para mostrar un mensaje en la vista
+    public void mostrarMensaje(String mensaje) {
+        JOptionPane.showMessageDialog(this, mensaje);
+    }
+
+    // Método para limpiar los campos de la vista
     public void limpiarCampos() {
         textnombre.setText("");
         textnacimiento.setText("");
@@ -147,4 +116,5 @@ public class RegistroUsuarioView extends JInternalFrame {
         passwordconfcontrasena.setText("");
     }
 }
+
 
