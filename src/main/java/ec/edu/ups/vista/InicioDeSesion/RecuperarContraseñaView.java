@@ -1,103 +1,147 @@
 package ec.edu.ups.vista.InicioDeSesion;
-import ec.edu.ups.util.MensajeInternacionalizacionHandler;
-import javax.swing.*;
 
-public class RecuperarContraseñaView extends JInternalFrame {
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+
+public class RecuperarContraseñaView extends JFrame {
 
     private JPanel panelPrincipal;
-    private JTextField textField1; // Respuesta a la primera pregunta de seguridad
-    private JTextField textField2; // Respuesta a la segunda pregunta de seguridad
-    private JTextField textField3; // Respuesta a la tercera pregunta de seguridad
-    private JTextField textField4; // Respuesta a la cuarta pregunta de seguridad
-    private JTextField textField5; // Respuesta a la quinta pregunta de seguridad
-    private JButton aceptarButton;  // Botón para aceptar y verificar las respuestas
-    private JButton cancelarButton; // Botón para cancelar y salir
-    private JPasswordField passwordField1;
-    private JButton cambiarButton;
-    private JButton cancelarButton1;
-    private JLabel NuevaContra;
+    private JTextField textUsername;
+    private JPasswordField passwordNuevaContraseña;
+    private JPasswordField passwordConfirmarContraseña;
+    private JButton btnRecuperar;
+    private JButton btnCancelar;
+    private JLabel lblPregunta1;
+    private JLabel lblPregunta2;
+    private JLabel lblPregunta3;
+    private JTextField textRespuesta1;
+    private JTextField textRespuesta2;
+    private JTextField textRespuesta3;
 
-    // Constructor
     public RecuperarContraseñaView() {
-        // Inicializar el panelPrincipal manualmente
-        panelPrincipal = new JPanel();
-        panelPrincipal.setLayout(new BoxLayout(panelPrincipal, BoxLayout.Y_AXIS));  // O el layout que desees
+        setTitle("Recuperar Contraseña");
 
-        // Ahora puedes inicializar los otros componentes y agregarlos a panelPrincipal
-        // Ejemplo: panelPrincipal.add(aceptarButton);
-
-        setContentPane(panelPrincipal);  // Establecer el panel principal como el contenido de la ventana
-        setClosable(true);
-        setIconifiable(true);
-        setResizable(true);
+        // Configuración básica de la ventana
+        setSize(400, 500);
+        setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setSize(600, 400);
+
+        // Inicializar el panel principal
+        panelPrincipal = new JPanel();
+        panelPrincipal.setLayout(new BoxLayout(panelPrincipal, BoxLayout.Y_AXIS));
+
+        // Crear y agregar componentes
+        JLabel lblUsuario = new JLabel("Nombre de Usuario:");
+        textUsername = new JTextField(20);
+
+        lblPregunta1 = new JLabel("Pregunta 1:");
+        textRespuesta1 = new JTextField(20);
+
+        lblPregunta2 = new JLabel("Pregunta 2:");
+        textRespuesta2 = new JTextField(20);
+
+        lblPregunta3 = new JLabel("Pregunta 3:");
+        textRespuesta3 = new JTextField(20);
+
+        JLabel lblNuevaContraseña = new JLabel("Nueva Contraseña:");
+        passwordNuevaContraseña = new JPasswordField(20);
+
+        JLabel lblConfirmar = new JLabel("Confirmar Contraseña:");
+        passwordConfirmarContraseña = new JPasswordField(20);
+
+        btnRecuperar = new JButton("Recuperar Contraseña");
+        btnCancelar = new JButton("Cancelar");
+
+        // Agregar componentes al panel
+        panelPrincipal.add(Box.createVerticalStrut(20));
+        panelPrincipal.add(crearPanel(lblUsuario, textUsername));
+        panelPrincipal.add(Box.createVerticalStrut(10));
+        panelPrincipal.add(crearPanel(lblPregunta1, textRespuesta1));
+        panelPrincipal.add(Box.createVerticalStrut(10));
+        panelPrincipal.add(crearPanel(lblPregunta2, textRespuesta2));
+        panelPrincipal.add(Box.createVerticalStrut(10));
+        panelPrincipal.add(crearPanel(lblPregunta3, textRespuesta3));
+        panelPrincipal.add(Box.createVerticalStrut(10));
+        panelPrincipal.add(crearPanel(lblNuevaContraseña, passwordNuevaContraseña));
+        panelPrincipal.add(Box.createVerticalStrut(10));
+        panelPrincipal.add(crearPanel(lblConfirmar, passwordConfirmarContraseña));
+        panelPrincipal.add(Box.createVerticalStrut(20));
+
+        // Panel para botones
+        JPanel panelBotones = new JPanel();
+        panelBotones.add(btnRecuperar);
+        panelBotones.add(btnCancelar);
+        panelPrincipal.add(panelBotones);
+
+        // Agregar panel principal a la ventana
+        add(panelPrincipal);
     }
 
-    // Métodos para acceder a los campos de texto (respuestas)
-    public JTextField getTextField1() {
-        return textField1;
+    // Método auxiliar para crear paneles con label y campo
+    private JPanel crearPanel(JLabel label, JComponent campo) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panel.add(label);
+        panel.add(campo);
+        return panel;
     }
 
-    public JTextField getTextField2() {
-        return textField2;
+    // Getters
+    public String getUsername() {
+        return textUsername.getText();
     }
 
-    public JTextField getTextField3() {
-        return textField3;
+    public String getRespuesta1() {
+        return textRespuesta1.getText();
     }
 
-    public JTextField getTextField4() {
-        return textField4;
+    public String getRespuesta2() {
+        return textRespuesta2.getText();
     }
 
-    public JTextField getTextField5() {
-        return textField5;
+    public String getRespuesta3() {
+        return textRespuesta3.getText();
     }
 
-    // Métodos para los botones
-    public JButton getAceptarButton() {
-        return aceptarButton;
+    public String getNuevaContraseña() {
+        return new String(passwordNuevaContraseña.getPassword());
     }
 
-    public JButton getCancelarButton() {
-        return cancelarButton;
+    public String getConfirmarContraseña() {
+        return new String(passwordConfirmarContraseña.getPassword());
     }
 
-    public JButton getCambiarButton() {
-        return cambiarButton;
+    // Método para establecer las preguntas
+    public void setPreguntasSeguridad(ArrayList<String> preguntas) {
+        if (preguntas != null && preguntas.size() >= 3) {
+            lblPregunta1.setText(preguntas.get(0));
+            lblPregunta2.setText(preguntas.get(1));
+            lblPregunta3.setText(preguntas.get(2));
+        }
     }
 
-    public JButton getCancelarButton1() {
-        return cancelarButton1;
-    }
-    public JPasswordField getPasswordField1() {
-        return passwordField1;
-    }
-    public JLabel getNuevaContra() {
-        return NuevaContra;
-    }
-
-
-    // Método para actualizar el idioma de la vista
-    public void actualizarIdioma(MensajeInternacionalizacionHandler mensajeHandler) {
-        setTitle(mensajeHandler.get("usuario.view.recuperar.titulo"));
-        aceptarButton.setText(mensajeHandler.get("usuario.view.recuperar.aceptar"));
-        cancelarButton.setText(mensajeHandler.get("usuario.view.recuperar.cancelar"));
-    }
-
-    // Método para mostrar un mensaje en la vista
+    // Métodos de utilidad
     public void mostrarMensaje(String mensaje) {
         JOptionPane.showMessageDialog(this, mensaje);
     }
 
-    // Método para limpiar los campos de respuesta
     public void limpiarCampos() {
-        textField1.setText("");
-        textField2.setText("");
-        textField3.setText("");
-        textField4.setText("");
-        textField5.setText("");
+        textUsername.setText("");
+        textRespuesta1.setText("");
+        textRespuesta2.setText("");
+        textRespuesta3.setText("");
+        passwordNuevaContraseña.setText("");
+        passwordConfirmarContraseña.setText("");
+    }
+
+    // Action Listeners
+    public void addRecuperarListener(ActionListener listener) {
+        btnRecuperar.addActionListener(listener);
+    }
+
+    public void addCancelarListener(ActionListener listener) {
+        btnCancelar.addActionListener(listener);
     }
 }
-

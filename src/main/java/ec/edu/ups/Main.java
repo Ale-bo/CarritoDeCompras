@@ -11,27 +11,27 @@ import ec.edu.ups.vista.Usuario.ListarUsuarioView;
 import ec.edu.ups.vista.Usuario.EliminarUsuarioView;
 import ec.edu.ups.vista.Usuario.ActualizarUsuarioView;
 
+import javax.swing.*;
 import java.util.Locale;
 
 public class Main {
-
     public static void main(String[] args) {
-        // Configuración de idioma inicial (por ejemplo, español)
-        Locale.setDefault(new Locale("es", "EC"));  // Por defecto, idioma español Ecuador
+        // 1. Configuración del idioma
+        Locale.setDefault(new Locale("es", "EC"));
         MensajeInternacionalizacionHandler mensajeHandler = new MensajeInternacionalizacionHandler("es", "EC");
 
-        // Inicializar el DAO de usuarios en memoria (para pruebas)
+        // 2. Inicialización del DAO (Capa de acceso a datos)
         UsuarioDAO usuarioDAO = new UsuarioDAOMemoria();
 
-        // Inicializar vistas
-        LoginView loginView = new LoginView(mensajeHandler);
+        // 3. Inicialización de todas las vistas
+        LoginView loginView = new LoginView();
         RegistrarUsuarioView registrarUsuarioView = new RegistrarUsuarioView();
         ListarUsuarioView listarUsuarioView = new ListarUsuarioView(mensajeHandler);
         EliminarUsuarioView eliminarUsuarioView = new EliminarUsuarioView(mensajeHandler);
         ActualizarUsuarioView actualizarUsuarioView = new ActualizarUsuarioView(mensajeHandler);
         RecuperarContraseñaView recuperarContraseñaView = new RecuperarContraseñaView();
 
-        // Inicializar el controlador de usuario
+        // 4. Inicialización del controlador principal
         UsuarioController usuarioController = new UsuarioController(
                 usuarioDAO,
                 loginView,
@@ -42,21 +42,19 @@ public class Main {
                 recuperarContraseñaView
         );
 
-        // Mostrar la vista de login (lo primero que verá el usuario)
+        // 5. Mostrar la ventana de inicio de sesión
         loginView.setVisible(true);
-
-        // Ejemplo de cambio de idioma dinámico desde el código
-        // usuarioController.cambiarIdioma("en", "US");  // Cambiar idioma a inglés
-        // usuarioController.cambiarIdioma("fr", "FR");  // Cambiar idioma a francés
-
-        // También puedes configurar el idioma mediante un menú o preferencias
-        // Por ejemplo, agregar un menú en la vista de login que permita cambiar el idioma
-        // Y luego reflejar los cambios en todas las vistas.
-
-        // Nota: Si estás conectando a una base de datos real, aquí podrías configurar la conexión
-        // Conectarse a la base de datos o revisar si existe una configuración válida.
-
+    }
+    private static void mostrarVentana(MenuPrincipalView principal, JInternalFrame ventana) {
+        if (!ventana.isVisible()) {
+            if (ventana.getParent() == null) {
+                principal.getDesktopPane().add(ventana);
+            }
+            ventana.setVisible(true);
+        }
+        ventana.toFront();
     }
 }
+
 
 

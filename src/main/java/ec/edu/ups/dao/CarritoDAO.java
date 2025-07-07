@@ -1,6 +1,6 @@
 package ec.edu.ups.dao;
 
-import ec.edu.ups.modelo.Carrito.Carrito;
+import ec.edu.ups.modelo.Carrito;
 import java.util.List;
 
 public interface CarritoDAO {

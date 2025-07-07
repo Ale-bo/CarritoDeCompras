@@ -1,7 +1,4 @@
-package ec.edu.ups.modelo.Carrito;
-
-import ec.edu.ups.modelo.ItemCarrito;
-import ec.edu.ups.modelo.Producto;
+package ec.edu.ups.modelo;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;

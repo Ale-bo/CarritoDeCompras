@@ -1,7 +1,7 @@
 package ec.edu.ups.dao.impl;
 
 import ec.edu.ups.dao.CarritoDAO;
-import ec.edu.ups.modelo.Carrito.Carrito;
+import ec.edu.ups.modelo.Carrito;
 
 import java.util.ArrayList;
 import java.util.Iterator;
