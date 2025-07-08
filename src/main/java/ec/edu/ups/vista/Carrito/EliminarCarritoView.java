@@ -5,10 +5,12 @@ import ec.edu.ups.util.MensajeInternacionalizacionHandler;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 
 public class EliminarCarritoView extends JInternalFrame {
 
     private JPanel panelPrincipal;
+    private JLabel lblUsuario;
     private JComboBox<String> comboFiltro;
     private JTextField txtBusqueda;
     private JButton btnBuscar;
@@ -16,17 +18,11 @@ public class EliminarCarritoView extends JInternalFrame {
     private JButton btnEliminar;
 
     private DefaultTableModel modelo;
-    private final CarritoController carritoController;
+    private CarritoController carritoController;
     private final MensajeInternacionalizacionHandler mensajes;
-    private JLabel CodigoDeUsuario;
-    private JTextField Codigo;
-    private JButton buscarButton;
-    private JButton eliminarButton;
-    private JTable table1;
 
-    public EliminarCarritoView(CarritoController carritoController, MensajeInternacionalizacionHandler mensajes) {
+    public EliminarCarritoView(MensajeInternacionalizacionHandler mensajes) {
         super("", true, true, true, true);
-        this.carritoController = carritoController;
         this.mensajes = mensajes;
 
         setContentPane(panelPrincipal);
@@ -48,9 +44,12 @@ public class EliminarCarritoView extends JInternalFrame {
 
         tablaResultado.setModel(modelo);
         actualizarIdioma();
+    }
 
-        btnBuscar.addActionListener(e -> carritoController.buscarCarritoParaEliminar());
-        btnEliminar.addActionListener(e -> carritoController.eliminarCarritoSeleccionado());
+    public void setCarritoController(CarritoController carritoController) {
+        this.carritoController = carritoController;
+        btnBuscar.addActionListener(e -> this.carritoController.buscarCarritoParaEliminar());
+        btnEliminar.addActionListener(e -> this.carritoController.eliminarCarritoSeleccionado());
     }
 
     public void actualizarIdioma() {
@@ -69,24 +68,25 @@ public class EliminarCarritoView extends JInternalFrame {
         });
     }
 
-    public String getFiltro() {
-        return comboFiltro.getSelectedItem().toString();
+    // Getters de componentes
+    public JComboBox<String> getFiltro() {
+        return comboFiltro;
     }
 
-    public String getTxtBusqueda() {
-        return txtBusqueda.getText();
+    public JTextField getTxtBusqueda() {
+        return txtBusqueda;
     }
 
     public JButton getBtnBuscar() {
         return btnBuscar;
     }
 
-    public JButton getBtnEliminar() {
-        return btnEliminar;
-    }
-
     public JTable getTablaResultado() {
         return tablaResultado;
+    }
+
+    public JButton getBtnEliminar() {
+        return btnEliminar;
     }
 
     public DefaultTableModel getModelResultado() {
@@ -97,5 +97,3 @@ public class EliminarCarritoView extends JInternalFrame {
         JOptionPane.showMessageDialog(this, s);
     }
 }
-
-

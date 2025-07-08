@@ -4,17 +4,16 @@ import ec.edu.ups.util.MensajeInternacionalizacionHandler;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 
 public class ListarProductoView extends JInternalFrame {
 
     private JPanel panelPrincipal;
-    private JLabel lblBuscar;
     private JTextField txtBuscar;
     private JButton btnBuscar;
     private JButton btnListar;
-    private JLabel lblNombre;
-    private JTable tblProductos;
     private JTable tablaProductos;
+    private JLabel lblNombre;
 
     private DefaultTableModel modelo;
     private final MensajeInternacionalizacionHandler mensajes;
@@ -38,7 +37,6 @@ public class ListarProductoView extends JInternalFrame {
 
     public void actualizarIdioma() {
         setTitle(mensajes.get("producto.listar.titulo"));
-        lblBuscar.setText(mensajes.get("producto.listar.lbl.buscar"));
         btnBuscar.setText(mensajes.get("producto.listar.btn.buscar"));
         btnListar.setText(mensajes.get("producto.listar.btn.listar"));
 
@@ -59,10 +57,6 @@ public class ListarProductoView extends JInternalFrame {
 
     public JButton getBtnListar() {
         return btnListar;
-    }
-
-    public JTable getTablaProductos() {
-        return tablaProductos;
     }
 
     public DefaultTableModel getModelo() {

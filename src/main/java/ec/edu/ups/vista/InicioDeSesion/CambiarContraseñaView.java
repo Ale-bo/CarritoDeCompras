@@ -1,15 +1,23 @@
 package ec.edu.ups.vista.InicioDeSesion;
+
 import ec.edu.ups.util.MensajeInternacionalizacionHandler;
+
 import javax.swing.*;
+import java.awt.*;
 
 public class CambiarContraseñaView extends JInternalFrame {
 
-    private JTextField textField1; // Campo para el usuario
-    private JPasswordField passwordField1; // Campo para la nueva contraseña
-    private JPasswordField passwordField2; // Campo para confirmar la nueva contraseña
-    private JButton guardarButton;  // Botón para guardar la nueva contraseña
-    private JButton cancelarButton; // Botón para cancelar
     private JPanel panelPrincipal;
+    private JTextField textUsuario;
+    private JPasswordField passContraseña;
+    private JPasswordField passCfmContraseña;
+    private JButton guardarButton;
+    private JButton cancelarButton;
+    private JLabel lblUsuario;
+    private JLabel lblContraseñaNueva;
+    private JLabel lblCfmContraseña;
+    private JLabel lblCondiciones;
+    private JLabel lblContraseñaSegura;
 
     public CambiarContraseñaView() {
         setContentPane(panelPrincipal);
@@ -20,44 +28,74 @@ public class CambiarContraseñaView extends JInternalFrame {
         setSize(600, 400);
     }
 
-    // Métodos para obtener los datos de los campos
-    public String getUsuario() {
-        return textField1.getText();
+    /** Carga el nombre de usuario en el campo */
+    public void setUsuario(String usr) {
+        textUsuario.setText(usr);
     }
 
+    // Getters de datos
+    public String getTxtUsuario() {
+        return textUsuario.getText();
+    }
     public String getNuevaContraseña() {
-        return new String(passwordField1.getPassword());
+        return new String(passContraseña.getPassword());
     }
-
     public String getConfirmarContraseña() {
-        return new String(passwordField2.getPassword());
+        return new String(passCfmContraseña.getPassword());
     }
 
-    // Métodos para los botones
+    // Getters de componentes para el controlador
+    public JPanel getPanelPrincipal() {
+        return panelPrincipal;
+    }
+    public JTextField getTextUsuarioField() {
+        return textUsuario;
+    }
+    public JPasswordField getPassContraseñaField() {
+        return passContraseña;
+    }
+    public JPasswordField getPassCfmContraseñaField() {
+        return passCfmContraseña;
+    }
     public JButton getGuardarButton() {
         return guardarButton;
     }
-
     public JButton getCancelarButton() {
         return cancelarButton;
     }
-
-    // Método para actualizar los textos de la vista según el idioma
-    public void actualizarIdioma(MensajeInternacionalizacionHandler mensajeHandler) {
-        setTitle(mensajeHandler.get("usuario.view.cambiarContraseña.titulo"));
-        guardarButton.setText(mensajeHandler.get("usuario.view.cambiarContraseña.guardar"));
-        cancelarButton.setText(mensajeHandler.get("usuario.view.cambiarContraseña.cancelar"));
+    public JLabel getLblUsuario() {
+        return lblUsuario;
+    }
+    public JLabel getLblContraseñaNueva() {
+        return lblContraseñaNueva;
+    }
+    public JLabel getLblCfmContraseña() {
+        return lblCfmContraseña;
+    }
+    public JLabel getLblCondiciones() {
+        return lblCondiciones;
     }
 
-    // Método para mostrar mensajes en la vista
-    public void mostrarMensaje(String mensaje) {
-        JOptionPane.showMessageDialog(this, mensaje);
+    /** Actualiza textos según el idioma */
+    public void actualizarIdioma(MensajeInternacionalizacionHandler mh) {
+        setTitle(mh.get("usuario.view.cambiarContraseña.titulo"));
+        lblUsuario.setText(mh.get("usuario.view.cambiarContraseña.usuario"));
+        lblContraseñaNueva.setText(mh.get("usuario.view.cambiarContraseña.nueva"));
+        lblCfmContraseña.setText(mh.get("usuario.view.cambiarContraseña.confirmar"));
+        lblCondiciones.setText(mh.get("usuario.view.cambiarContraseña.condiciones"));
+        guardarButton.setText(mh.get("usuario.view.cambiarContraseña.guardar"));
+        cancelarButton.setText(mh.get("usuario.view.cambiarContraseña.cancelar"));
     }
 
-    // Método para limpiar los campos de la vista
+    /** Muestra un diálogo de mensaje */
+    public void mostrarMensaje(String msg) {
+        JOptionPane.showMessageDialog(this, msg);
+    }
+
+    /** Limpia todos los campos */
     public void limpiarCampos() {
-        textField1.setText("");
-        passwordField1.setText("");
-        passwordField2.setText("");
+        textUsuario.setText("");
+        passContraseña.setText("");
+        passCfmContraseña.setText("");
     }
 }

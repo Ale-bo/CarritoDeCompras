@@ -4,12 +4,11 @@ import ec.edu.ups.controlador.CarritoController;
 import ec.edu.ups.util.MensajeInternacionalizacionHandler;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 
 public class ActualizarCarritoView extends JInternalFrame {
-
-    private final CarritoController carritoController;
-    private final MensajeInternacionalizacionHandler mensajeHandler;
 
     private JPanel panelPrincipal;
     private JTextField txtCodigo;
@@ -17,16 +16,17 @@ public class ActualizarCarritoView extends JInternalFrame {
     private JButton btnBuscar;
     private JButton btnActualizar;
     private JButton btnCancelar;
-    private JTextField textCodigo;
-    private JTextField txtTotal;
-    private JTable table1;
-    private JTable tblCarritos;
-    private DefaultTableModel modelo;
-    private JLabel lblCodigo;
     private JLabel lblCantidad;
+    private JTable tblCarritos;
+    private JLabel codigoLabel;
+    private JLabel totalLabel;
+    private JTextField txtTotal;
+    private DefaultTableModel modelo;
+    private final MensajeInternacionalizacionHandler mensajeHandler;
+    private CarritoController carritoController;
 
-    public ActualizarCarritoView(CarritoController carritoController, MensajeInternacionalizacionHandler mensajeHandler) {
-        this.carritoController = carritoController;
+    public ActualizarCarritoView(MensajeInternacionalizacionHandler mensajeHandler) {
+        super("", true, true, true, true);
         this.mensajeHandler = mensajeHandler;
 
         setContentPane(panelPrincipal);
@@ -37,31 +37,30 @@ public class ActualizarCarritoView extends JInternalFrame {
         setSize(600, 400);
 
         modelo = (DefaultTableModel) tblCarritos.getModel();
-
         actualizarIdioma();
+    }
 
-        // Delegando la carga de carritos al controlador
-        btnBuscar.addActionListener(e -> carritoController.cargarTablaMod());
-        btnActualizar.addActionListener(e -> carritoController.actualizarCarrito());
+    public void setCarritoController(CarritoController carritoController) {
+        this.carritoController = carritoController;
+        btnBuscar.addActionListener(e -> this.carritoController.cargarTablaMod());
+        btnActualizar.addActionListener(e -> this.carritoController.actualizarCarrito());
         btnCancelar.addActionListener(e -> limpiarCampos());
     }
 
     public void actualizarIdioma() {
         setTitle(mensajeHandler.get("carrito.view.modificar.titulo"));
-        lblCodigo.setText(mensajeHandler.get("carrito.view.modificar.codigo"));
-        lblCantidad.setText(mensajeHandler.get("carrito.view.modificar.cantidad"));
+        // Ajustar textos...
         btnBuscar.setText(mensajeHandler.get("carrito.view.modificar.buscar"));
         btnActualizar.setText(mensajeHandler.get("carrito.view.modificar.actualizar"));
         btnCancelar.setText(mensajeHandler.get("carrito.view.modificar.cancelar"));
 
         modelo.setColumnIdentifiers(new Object[]{
                 mensajeHandler.get("carrito.view.modificar.codigo"),
-                mensajeHandler.get("carrito.view.modificar.nombre"),
-                mensajeHandler.get("carrito.view.modificar.precio"),
                 mensajeHandler.get("carrito.view.modificar.cantidad")
         });
     }
 
+    // Getters de componentes
     public JTextField getTxtCodigo() {
         return txtCodigo;
     }
@@ -82,11 +81,11 @@ public class ActualizarCarritoView extends JInternalFrame {
         return btnCancelar;
     }
 
-    public JTable getTableCarritos() {
+    public JTable getTblCarritos() {
         return tblCarritos;
     }
 
-    public DefaultTableModel getTableModel() {
+    public DefaultTableModel getModelo() {
         return modelo;
     }
 
@@ -98,6 +97,8 @@ public class ActualizarCarritoView extends JInternalFrame {
         txtCodigo.setText("");
         txtCantidad.setText("");
     }
+
+    public DefaultTableModel getTableModel() {
+        return modelo;
+    }
 }
-
-

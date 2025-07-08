@@ -1,4 +1,5 @@
 package ec.edu.ups.dao.impl;
+
 import ec.edu.ups.dao.UsuarioDAO;
 import ec.edu.ups.modelo.Rol;
 import ec.edu.ups.modelo.Usuario;
@@ -12,13 +13,33 @@ public class UsuarioDAOMemoria implements UsuarioDAO {
     private List<Usuario> usuarios;
 
     public UsuarioDAOMemoria() {
-        usuarios = new ArrayList<Usuario>();
+        usuarios = new ArrayList<>();
+
+        List<Integer> adminPregIds = List.of(1, 2, 3);
+        List<String>  adminResps   = List.of("Smith", "Blue", "Pizza");
+        // --- CREAR ADMIN POR DEFECTO ---
+        Usuario admin = new Usuario(
+                "admin",
+                "12345",
+                "Administrador",
+                "admin@ejemplo.com",
+                "0999999999",
+                adminPregIds,
+                adminResps
+        );
+        admin.setRol(Rol.ADMINISTRADOR);
+        usuarios.add(admin);
+
+        System.out.println("Usuario ADMIN creado: username="
+                + admin.getUsername()
+                + ", password=" + admin.getContrasenia());
     }
 
     @Override
     public Usuario autenticar(String username, String contrasenia) {
         for (Usuario usuario : usuarios) {
-            if(usuario.getUsername().equals(username) && usuario.getContrasenia().equals(contrasenia)){
+            if (usuario.getUsername().equals(username)
+                    && usuario.getContrasenia().equals(contrasenia)) {
                 return usuario;
             }
         }
@@ -54,9 +75,8 @@ public class UsuarioDAOMemoria implements UsuarioDAO {
 
     @Override
     public void actualizar(Usuario usuario) {
-        for(int i = 0; i < usuarios.size(); i++){
-            Usuario usuarioAux = usuarios.get(i);
-            if(usuarioAux.getUsername().equals(usuario.getUsername())){
+        for (int i = 0; i < usuarios.size(); i++) {
+            if (usuarios.get(i).getUsername().equals(usuario.getUsername())) {
                 usuarios.set(i, usuario);
                 break;
             }
@@ -70,14 +90,12 @@ public class UsuarioDAOMemoria implements UsuarioDAO {
 
     @Override
     public List<Usuario> listarPorRol(Rol rol) {
-        List<Usuario> usuariosEncontrados = new ArrayList<>();
-
+        List<Usuario> encontrados = new ArrayList<>();
         for (Usuario usuario : usuarios) {
             if (usuario.getRol().equals(rol)) {
-                usuariosEncontrados.add(usuario);
+                encontrados.add(usuario);
             }
         }
-
-        return usuariosEncontrados;
+        return encontrados;
     }
 }

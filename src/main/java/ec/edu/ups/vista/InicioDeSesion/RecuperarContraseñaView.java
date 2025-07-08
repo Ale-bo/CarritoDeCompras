@@ -1,147 +1,104 @@
 package ec.edu.ups.vista.InicioDeSesion;
 
+import ec.edu.ups.util.MensajeInternacionalizacionHandler;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.util.List;
 
-public class RecuperarContraseñaView extends JFrame {
+public class RecuperarContraseñaView extends JInternalFrame {
 
     private JPanel panelPrincipal;
     private JTextField textUsername;
-    private JPasswordField passwordNuevaContraseña;
-    private JPasswordField passwordConfirmarContraseña;
-    private JButton btnRecuperar;
-    private JButton btnCancelar;
-    private JLabel lblPregunta1;
-    private JLabel lblPregunta2;
-    private JLabel lblPregunta3;
-    private JTextField textRespuesta1;
-    private JTextField textRespuesta2;
-    private JTextField textRespuesta3;
+    private JTextField textCorreo;
+    private JComboBox<String> comboPreguntas;
+    private JTextField textRespuesta;
+    private JButton btnRecuperar, btnCancelar;
+    private JLabel lblUsuario, lblCorreo, lblPregunta, lblRespuesta, correoElectronicoLabel;
 
-    public RecuperarContraseñaView() {
-        setTitle("Recuperar Contraseña");
+    public RecuperarContraseñaView(MensajeInternacionalizacionHandler mh) {
+        super(mh.get("usuario.view.recuperar.titulo"), true, true, true, true);
 
-        // Configuración básica de la ventana
-        setSize(400, 500);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        panelPrincipal = new JPanel(new GridLayout(5, 2, 5, 5));
 
-        // Inicializar el panel principal
-        panelPrincipal = new JPanel();
-        panelPrincipal.setLayout(new BoxLayout(panelPrincipal, BoxLayout.Y_AXIS));
+        lblUsuario   = new JLabel(mh.get("login.label.usuario"));
+        textUsername = new JTextField();
+        textUsername.setEditable(false);
 
-        // Crear y agregar componentes
-        JLabel lblUsuario = new JLabel("Nombre de Usuario:");
-        textUsername = new JTextField(20);
+        lblCorreo    = new JLabel(mh.get("usuario.correo"));
+        textCorreo   = new JTextField();
+        textCorreo.setEditable(false);
 
-        lblPregunta1 = new JLabel("Pregunta 1:");
-        textRespuesta1 = new JTextField(20);
+        lblPregunta  = new JLabel(mh.get("usuario.preguntasSeguridad"));
+        comboPreguntas = new JComboBox<>();
 
-        lblPregunta2 = new JLabel("Pregunta 2:");
-        textRespuesta2 = new JTextField(20);
+        lblRespuesta = new JLabel(mh.get("usuario.recuperacion.respuesta"));
+        textRespuesta = new JTextField();
 
-        lblPregunta3 = new JLabel("Pregunta 3:");
-        textRespuesta3 = new JTextField(20);
+        btnRecuperar = new JButton(mh.get("usuario.view.recuperar.btn.recuperar"));
+        btnCancelar  = new JButton(mh.get("usuario.view.recuperar.btn.cancelar"));
 
-        JLabel lblNuevaContraseña = new JLabel("Nueva Contraseña:");
-        passwordNuevaContraseña = new JPasswordField(20);
+        panelPrincipal.add(lblUsuario);
+        panelPrincipal.add(textUsername);
+        panelPrincipal.add(lblCorreo);
+        panelPrincipal.add(textCorreo);
+        panelPrincipal.add(lblPregunta);
+        panelPrincipal.add(comboPreguntas);
+        panelPrincipal.add(lblRespuesta);
+        panelPrincipal.add(textRespuesta);
+        panelPrincipal.add(btnRecuperar);
+        panelPrincipal.add(btnCancelar);
 
-        JLabel lblConfirmar = new JLabel("Confirmar Contraseña:");
-        passwordConfirmarContraseña = new JPasswordField(20);
-
-        btnRecuperar = new JButton("Recuperar Contraseña");
-        btnCancelar = new JButton("Cancelar");
-
-        // Agregar componentes al panel
-        panelPrincipal.add(Box.createVerticalStrut(20));
-        panelPrincipal.add(crearPanel(lblUsuario, textUsername));
-        panelPrincipal.add(Box.createVerticalStrut(10));
-        panelPrincipal.add(crearPanel(lblPregunta1, textRespuesta1));
-        panelPrincipal.add(Box.createVerticalStrut(10));
-        panelPrincipal.add(crearPanel(lblPregunta2, textRespuesta2));
-        panelPrincipal.add(Box.createVerticalStrut(10));
-        panelPrincipal.add(crearPanel(lblPregunta3, textRespuesta3));
-        panelPrincipal.add(Box.createVerticalStrut(10));
-        panelPrincipal.add(crearPanel(lblNuevaContraseña, passwordNuevaContraseña));
-        panelPrincipal.add(Box.createVerticalStrut(10));
-        panelPrincipal.add(crearPanel(lblConfirmar, passwordConfirmarContraseña));
-        panelPrincipal.add(Box.createVerticalStrut(20));
-
-        // Panel para botones
-        JPanel panelBotones = new JPanel();
-        panelBotones.add(btnRecuperar);
-        panelBotones.add(btnCancelar);
-        panelPrincipal.add(panelBotones);
-
-        // Agregar panel principal a la ventana
-        add(panelPrincipal);
+        setContentPane(panelPrincipal);
+        pack();
     }
 
-    // Método auxiliar para crear paneles con label y campo
-    private JPanel crearPanel(JLabel label, JComponent campo) {
-        JPanel panel = new JPanel();
-        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        panel.add(label);
-        panel.add(campo);
-        return panel;
+    public void actualizarIdioma(MensajeInternacionalizacionHandler mh) {
+        setTitle(mh.get("usuario.view.recuperar.titulo"));
+        lblUsuario.setText(mh.get("login.label.usuario"));
+        lblCorreo.setText(mh.get("usuario.correo"));
+        lblPregunta.setText(mh.get("usuario.preguntasSeguridad"));
+        lblRespuesta.setText(mh.get("usuario.recuperacion.respuesta"));
+        btnRecuperar.setText(mh.get("usuario.view.recuperar.btn.recuperar"));
+        btnCancelar.setText(mh.get("usuario.view.recuperar.btn.cancelar"));
     }
 
-    // Getters
-    public String getUsername() {
-        return textUsername.getText();
+    // Para que el controller precargue datos:
+    public void setUsername(String u) { textUsername.setText(u); }
+    public void setCorreo(String c)   { textCorreo.setText(c); }
+
+    // El controller usará esto para inyectar la pregunta concreta:
+    public void setPregunta(String pregunta) {
+        comboPreguntas.removeAllItems();
+        comboPreguntas.addItem(pregunta);
     }
 
-    public String getRespuesta1() {
-        return textRespuesta1.getText();
-    }
-
-    public String getRespuesta2() {
-        return textRespuesta2.getText();
-    }
-
-    public String getRespuesta3() {
-        return textRespuesta3.getText();
-    }
-
-    public String getNuevaContraseña() {
-        return new String(passwordNuevaContraseña.getPassword());
-    }
-
-    public String getConfirmarContraseña() {
-        return new String(passwordConfirmarContraseña.getPassword());
-    }
-
-    // Método para establecer las preguntas
-    public void setPreguntasSeguridad(ArrayList<String> preguntas) {
-        if (preguntas != null && preguntas.size() >= 3) {
-            lblPregunta1.setText(preguntas.get(0));
-            lblPregunta2.setText(preguntas.get(1));
-            lblPregunta3.setText(preguntas.get(2));
+    // Si en algún caso quieres dar todo el banco de preguntas:
+    public void setPreguntasUsuario(List<String> preguntas) {
+        comboPreguntas.removeAllItems();
+        for (String p : preguntas) {
+            comboPreguntas.addItem(p);
         }
     }
 
-    // Métodos de utilidad
-    public void mostrarMensaje(String mensaje) {
-        JOptionPane.showMessageDialog(this, mensaje);
+    // Getters que tu controller invoca:
+    public String getUsername() {
+        return textUsername.getText().trim();
+    }
+    public String getRespuesta1() {
+        return textRespuesta.getText().trim();
     }
 
-    public void limpiarCampos() {
-        textUsername.setText("");
-        textRespuesta1.setText("");
-        textRespuesta2.setText("");
-        textRespuesta3.setText("");
-        passwordNuevaContraseña.setText("");
-        passwordConfirmarContraseña.setText("");
+    // Listeners para los botones:
+    public void addRecuperarListener(ActionListener l) {
+        btnRecuperar.addActionListener(l);
+    }
+    public void addCancelarListener(ActionListener l) {
+        btnCancelar.addActionListener(l);
     }
 
-    // Action Listeners
-    public void addRecuperarListener(ActionListener listener) {
-        btnRecuperar.addActionListener(listener);
-    }
-
-    public void addCancelarListener(ActionListener listener) {
-        btnCancelar.addActionListener(listener);
+    public void mostrarMensaje(String m) {
+        JOptionPane.showMessageDialog(this, m);
     }
 }

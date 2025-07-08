@@ -14,12 +14,13 @@ public class Usuario {
     private String respuestaSeguridad;
     private List<String> preguntasSeguridad;
     private List<String> respuestasSeguridad;
+    private List<Integer> preguntasIds; // <<-- Nuevo campo
 
     public Usuario() {
-
     }
 
-    public Usuario(String celular, String contrasenia, String correo, String fechaNacimiento, String nombre, String preguntaSeguridad, String respuestaSeguridad, Rol rol, String username, List<String> preguntasSeguridad, List<String> respuestasSeguridad) {
+    // Constructor completo
+    public Usuario(String celular, String contrasenia, String correo, String fechaNacimiento, String nombre, String preguntaSeguridad, String respuestaSeguridad, Rol rol, String username, List<String> preguntasSeguridad, List<String> respuestasSeguridad, List<Integer> preguntasIds) {
         this.celular = celular;
         this.contrasenia = contrasenia;
         this.correo = correo;
@@ -31,76 +32,71 @@ public class Usuario {
         this.username = username;
         this.preguntasSeguridad = preguntasSeguridad;
         this.respuestasSeguridad = respuestasSeguridad;
+        this.preguntasIds = preguntasIds;
+    }
+
+    // Constructor solo con IDs y respuestas
+    public Usuario(String username, String contrasenia, String nombre, String correo, String celular, List<Integer> preguntasIds, List<String> respuestasSeguridad) {
+        this.username = username;
+        this.contrasenia = contrasenia;
+        this.nombre = nombre;
+        this.correo = correo;
+        this.celular = celular;
+        this.preguntasIds = preguntasIds;
+        this.respuestasSeguridad = respuestasSeguridad;
     }
 
     public String getCelular() {
         return celular;
     }
-
-    public void setCelular(String celualr) {
-        this.celular = celualr;
+    public void setCelular(String celular) {
+        this.celular = celular;
     }
-
     public String getContrasenia() {
         return contrasenia;
     }
-
     public void setContrasenia(String contrasenia) {
         this.contrasenia = contrasenia;
     }
-
     public String getCorreo() {
         return correo;
     }
-
     public void setCorreo(String correo) {
         this.correo = correo;
     }
-
     public String getFechaNacimiento() {
         return fechaNacimiento;
     }
-
     public void setFechaNacimiento(String fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
     }
-
     public String getNombre() {
         return nombre;
     }
-
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-
     public String getPreguntaSeguridad() {
         return preguntaSeguridad;
     }
-
     public void setPreguntaSeguridad(String preguntaSeguridad) {
         this.preguntaSeguridad = preguntaSeguridad;
     }
-
     public String getRespuestaSeguridad() {
         return respuestaSeguridad;
     }
-
     public void setRespuestaSeguridad(String respuestaSeguridad) {
         this.respuestaSeguridad = respuestaSeguridad;
     }
-
     public Rol getRol() {
         return rol;
     }
-
     public void setRol(Rol rol) {
         this.rol = rol;
     }
-
     public String getUsername() {
         return username;
     }
-
     public void setUsername(String username) {
         this.username = username;
     }
@@ -117,10 +113,18 @@ public class Usuario {
         this.respuestasSeguridad = respuestasSeguridad;
     }
 
+    // Getter y Setter para preguntasIds
+    public List<Integer> getPreguntasIds() {
+        return preguntasIds;
+    }
+    public void setPreguntasIds(List<Integer> preguntasIds) {
+        this.preguntasIds = preguntasIds;
+    }
+
     @Override
     public String toString() {
         return "Usuario{" +
-                "celualr='" + celular + '\'' +
+                "celular='" + celular + '\'' +
                 ", username='" + username + '\'' +
                 ", contrasenia='" + contrasenia + '\'' +
                 ", rol=" + rol +
@@ -131,6 +135,7 @@ public class Usuario {
                 ", respuestaSeguridad='" + respuestaSeguridad + '\'' +
                 ", preguntasSeguridad=" + preguntasSeguridad +
                 ", respuestasSeguridad=" + respuestasSeguridad +
+                ", preguntasIds=" + preguntasIds +
                 '}';
     }
 }

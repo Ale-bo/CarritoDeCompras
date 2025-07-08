@@ -2,6 +2,7 @@ package ec.edu.ups.vista.Usuario;
 import ec.edu.ups.util.MensajeInternacionalizacionHandler;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 
 public class ActualizarUsuarioView extends JInternalFrame {
 
@@ -88,7 +89,7 @@ public class ActualizarUsuarioView extends JInternalFrame {
         return model;
     }
 
-    public JPasswordField getPasswordconfcontrasenia(){
+    public JPasswordField getPasswordconfcontrasenia() {
         return passwordconfcontrasenia;
     }
 

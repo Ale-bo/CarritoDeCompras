@@ -8,7 +8,7 @@
     <properties/>
     <border type="none"/>
     <children>
-      <grid id="ced13" binding="panelPrincipal" layout-manager="GridLayoutManager" row-count="5" column-count="6" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="ab324" binding="panelPrincipal" layout-manager="GridLayoutManager" row-count="6" column-count="6" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="0" bottom="0" right="0"/>
         <constraints>
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
@@ -16,7 +16,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="7ad3d" class="javax.swing.JLabel">
+          <component id="492b5" class="javax.swing.JLabel" binding="lblBuscar">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -24,7 +24,7 @@
               <text value="Numero Carrito"/>
             </properties>
           </component>
-          <component id="f6dcc" class="javax.swing.JTextField" binding="Codigo">
+          <component id="28b0e" class="javax.swing.JTextField" binding="txtBuscar">
             <constraints>
               <grid row="0" column="1" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
@@ -32,20 +32,20 @@
             </constraints>
             <properties/>
           </component>
-          <scrollpane id="254e7">
+          <scrollpane id="d68e3">
             <constraints>
-              <grid row="1" column="1" row-span="3" col-span="3" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <grid row="2" column="1" row-span="3" col-span="3" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties/>
             <border type="none"/>
             <children>
-              <component id="16a59" class="javax.swing.JTable" binding="table1" default-binding="true">
+              <component id="9acbe" class="javax.swing.JTable" binding="tablaCarritos">
                 <constraints/>
                 <properties/>
               </component>
             </children>
           </scrollpane>
-          <component id="e1bb1" class="javax.swing.JButton" binding="btnListar">
+          <component id="ba0a9" class="javax.swing.JButton" binding="btnListar">
             <constraints>
               <grid row="0" column="4" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -53,27 +53,35 @@
               <text value="Listar"/>
             </properties>
           </component>
-          <vspacer id="677cd">
+          <vspacer id="c43b4">
             <constraints>
-              <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+              <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
             </constraints>
           </vspacer>
-          <component id="c7a30" class="javax.swing.JLabel">
+          <component id="f437" class="javax.swing.JLabel">
             <constraints>
-              <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="5" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <text value="Total Carrito"/>
             </properties>
           </component>
-          <component id="e5bfd" class="javax.swing.JTextField" binding="textTotal">
+          <component id="4ffc7" class="javax.swing.JTextField" binding="textTotal">
             <constraints>
-              <grid row="4" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+              <grid row="5" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
               </grid>
             </constraints>
             <properties>
               <text value=""/>
+            </properties>
+          </component>
+          <component id="d86bc" class="javax.swing.JButton" binding="btnBuscar">
+            <constraints>
+              <grid row="1" column="4" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Buscar"/>
             </properties>
           </component>
         </children>
