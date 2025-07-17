@@ -5,7 +5,8 @@ import ec.edu.ups.util.MensajeInternacionalizacionHandler;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class EliminarProductoView extends JInternalFrame {
 
@@ -17,15 +18,15 @@ public class EliminarProductoView extends JInternalFrame {
     private JButton btnEliminar;
 
     private DefaultTableModel modelo;
-    private final ProductoController productoController;
+    // Se elimina 'final' para poder asignarlo más tarde
+    private ProductoController productoController;
     private final MensajeInternacionalizacionHandler mensajes;
 
-    public EliminarProductoView(ProductoController controller, MensajeInternacionalizacionHandler mensajes) {
+    // CORRECCIÓN: El constructor ya no recibe el controlador.
+    public EliminarProductoView(MensajeInternacionalizacionHandler mensajes) {
         super("", true, true, true, true);
-        this.productoController = controller;
         this.mensajes = mensajes;
 
-        // panelPrincipal y componentes generados por IntelliJ
         setContentPane(panelPrincipal);
         setClosable(true);
         setIconifiable(true);
@@ -33,24 +34,36 @@ public class EliminarProductoView extends JInternalFrame {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setSize(600, 400);
 
-        // Inicializar filtro
-        comboFiltro.addItem(mensajes.get("producto.eliminar.filtro.nombre"));
-        comboFiltro.addItem(mensajes.get("producto.eliminar.filtro.codigo"));
-
-        // Configurar modelo de la tabla
-        modelo = (DefaultTableModel) tablaResultado.getModel();
-        modelo.setColumnIdentifiers(new Object[]{
-                mensajes.get("producto.eliminar.tabla.column.codigo"),
-                mensajes.get("producto.eliminar.tabla.column.nombre"),
-                mensajes.get("producto.eliminar.tabla.column.precio")
-        });
-        tablaResultado.setModel(modelo);
+        // Asegurarse de que el modelo de la tabla esté inicializado
+        if (tablaResultado.getModel() instanceof DefaultTableModel) {
+            modelo = (DefaultTableModel) tablaResultado.getModel();
+        } else {
+            modelo = new DefaultTableModel();
+            tablaResultado.setModel(modelo);
+        }
 
         actualizarIdioma();
+    }
 
-        // Eventos delegados al controlador
-        btnBuscar.addActionListener(e -> productoController.buscarProductoParaEliminar());
-        btnEliminar.addActionListener(e -> productoController.eliminarProductoSeleccionado());
+    // ##### MÉTODO NUEVO Y CORREGIDO #####
+    // Permite enlazar la vista con el controlador y configurar los eventos.
+    public void setProductoController(ProductoController controller) {
+        this.productoController = controller;
+
+        // Se configuran los listeners usando clases anónimas.
+        btnBuscar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                productoController.buscarProductoParaEliminar();
+            }
+        });
+
+        btnEliminar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                productoController.eliminarProductoSeleccionado();
+            }
+        });
     }
 
     public void actualizarIdioma() {
@@ -70,7 +83,7 @@ public class EliminarProductoView extends JInternalFrame {
     }
 
     public String getFiltro() {
-        return comboFiltro.getSelectedItem().toString();
+        return (String) comboFiltro.getSelectedItem();
     }
 
     public String getTxtBusqueda() {

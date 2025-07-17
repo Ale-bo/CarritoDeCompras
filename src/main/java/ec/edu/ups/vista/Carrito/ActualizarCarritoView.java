@@ -4,9 +4,9 @@ import ec.edu.ups.controlador.CarritoController;
 import ec.edu.ups.util.MensajeInternacionalizacionHandler;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class ActualizarCarritoView extends JInternalFrame {
 
@@ -36,27 +36,58 @@ public class ActualizarCarritoView extends JInternalFrame {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setSize(600, 400);
 
-        modelo = (DefaultTableModel) tblCarritos.getModel();
+        // Asegurarse de que el modelo de la tabla esté inicializado
+        if (tblCarritos.getModel() instanceof DefaultTableModel) {
+            modelo = (DefaultTableModel) tblCarritos.getModel();
+        } else {
+            modelo = new DefaultTableModel();
+            tblCarritos.setModel(modelo);
+        }
+
         actualizarIdioma();
     }
 
+    // ##### CORRECCIÓN AQUÍ: Se reemplazan las lambdas por clases anónimas #####
     public void setCarritoController(CarritoController carritoController) {
         this.carritoController = carritoController;
-        btnBuscar.addActionListener(e -> this.carritoController.cargarTablaMod());
-        btnActualizar.addActionListener(e -> this.carritoController.actualizarCarrito());
-        btnCancelar.addActionListener(e -> limpiarCampos());
+
+        // Listener para el botón Buscar
+        btnBuscar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Llama al método del controlador
+                carritoController.cargarCarritoParaModificar();
+            }
+        });
+
+        // Listener para el botón Actualizar
+        btnActualizar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Llama al método del controlador
+                carritoController.actualizarItemCarrito();
+            }
+        });
+
+        // Listener para el botón Cancelar
+        btnCancelar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Llama a un método local de la vista
+                limpiarCampos();
+            }
+        });
     }
 
     public void actualizarIdioma() {
         setTitle(mensajeHandler.get("carrito.view.modificar.titulo"));
-        // Ajustar textos...
         btnBuscar.setText(mensajeHandler.get("carrito.view.modificar.buscar"));
         btnActualizar.setText(mensajeHandler.get("carrito.view.modificar.actualizar"));
         btnCancelar.setText(mensajeHandler.get("carrito.view.modificar.cancelar"));
 
+        // Definir las columnas de la tabla
         modelo.setColumnIdentifiers(new Object[]{
-                mensajeHandler.get("carrito.view.modificar.codigo"),
-                mensajeHandler.get("carrito.view.modificar.cantidad")
+                "Cod. Producto", "Nombre", "Cantidad", "Subtotal"
         });
     }
 

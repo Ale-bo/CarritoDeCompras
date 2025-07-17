@@ -10,132 +10,38 @@ public class Usuario {
     private String fechaNacimiento;
     private String correo;
     private String celular;
-    private String preguntaSeguridad;
-    private String respuestaSeguridad;
-    private List<String> preguntasSeguridad;
-    private List<String> respuestasSeguridad;
-    private List<Integer> preguntasIds; // <<-- Nuevo campo
+    private List<PreguntaSeguridad> preguntasDeSeguridad;
 
     public Usuario() {
+        this.rol = Rol.USUARIO;
     }
 
-    // Constructor completo
-    public Usuario(String celular, String contrasenia, String correo, String fechaNacimiento, String nombre, String preguntaSeguridad, String respuestaSeguridad, Rol rol, String username, List<String> preguntasSeguridad, List<String> respuestasSeguridad, List<Integer> preguntasIds) {
-        this.celular = celular;
+    public Usuario(String username, String contrasenia, String nombre, String correo, String celular, String fechaNacimiento, List<PreguntaSeguridad> preguntas) {
+        this.username = username;
         this.contrasenia = contrasenia;
+        this.nombre = nombre;
         this.correo = correo;
+        this.celular = celular;
         this.fechaNacimiento = fechaNacimiento;
-        this.nombre = nombre;
-        this.preguntaSeguridad = preguntaSeguridad;
-        this.respuestaSeguridad = respuestaSeguridad;
-        this.rol = rol;
-        this.username = username;
-        this.preguntasSeguridad = preguntasSeguridad;
-        this.respuestasSeguridad = respuestasSeguridad;
-        this.preguntasIds = preguntasIds;
+        this.preguntasDeSeguridad = preguntas;
+        this.rol = Rol.USUARIO;
     }
 
-    // Constructor solo con IDs y respuestas
-    public Usuario(String username, String contrasenia, String nombre, String correo, String celular, List<Integer> preguntasIds, List<String> respuestasSeguridad) {
-        this.username = username;
-        this.contrasenia = contrasenia;
-        this.nombre = nombre;
-        this.correo = correo;
-        this.celular = celular;
-        this.preguntasIds = preguntasIds;
-        this.respuestasSeguridad = respuestasSeguridad;
-    }
-
-    public String getCelular() {
-        return celular;
-    }
-    public void setCelular(String celular) {
-        this.celular = celular;
-    }
-    public String getContrasenia() {
-        return contrasenia;
-    }
-    public void setContrasenia(String contrasenia) {
-        this.contrasenia = contrasenia;
-    }
-    public String getCorreo() {
-        return correo;
-    }
-    public void setCorreo(String correo) {
-        this.correo = correo;
-    }
-    public String getFechaNacimiento() {
-        return fechaNacimiento;
-    }
-    public void setFechaNacimiento(String fechaNacimiento) {
-        this.fechaNacimiento = fechaNacimiento;
-    }
-    public String getNombre() {
-        return nombre;
-    }
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-    public String getPreguntaSeguridad() {
-        return preguntaSeguridad;
-    }
-    public void setPreguntaSeguridad(String preguntaSeguridad) {
-        this.preguntaSeguridad = preguntaSeguridad;
-    }
-    public String getRespuestaSeguridad() {
-        return respuestaSeguridad;
-    }
-    public void setRespuestaSeguridad(String respuestaSeguridad) {
-        this.respuestaSeguridad = respuestaSeguridad;
-    }
-    public Rol getRol() {
-        return rol;
-    }
-    public void setRol(Rol rol) {
-        this.rol = rol;
-    }
-    public String getUsername() {
-        return username;
-    }
-    public void setUsername(String username) {
-        this.username = username;
-    }
-    public List<String> getPreguntasSeguridad() {
-        return preguntasSeguridad;
-    }
-    public void setPreguntasSeguridad(List<String> preguntasSeguridad) {
-        this.preguntasSeguridad = preguntasSeguridad;
-    }
-    public List<String> getRespuestasSeguridad() {
-        return respuestasSeguridad;
-    }
-    public void setRespuestasSeguridad(List<String> respuestasSeguridad) {
-        this.respuestasSeguridad = respuestasSeguridad;
-    }
-
-    // Getter y Setter para preguntasIds
-    public List<Integer> getPreguntasIds() {
-        return preguntasIds;
-    }
-    public void setPreguntasIds(List<Integer> preguntasIds) {
-        this.preguntasIds = preguntasIds;
-    }
-
-    @Override
-    public String toString() {
-        return "Usuario{" +
-                "celular='" + celular + '\'' +
-                ", username='" + username + '\'' +
-                ", contrasenia='" + contrasenia + '\'' +
-                ", rol=" + rol +
-                ", nombre='" + nombre + '\'' +
-                ", fechaNacimiento='" + fechaNacimiento + '\'' +
-                ", correo='" + correo + '\'' +
-                ", preguntaSeguridad='" + preguntaSeguridad + '\'' +
-                ", respuestaSeguridad='" + respuestaSeguridad + '\'' +
-                ", preguntasSeguridad=" + preguntasSeguridad +
-                ", respuestasSeguridad=" + respuestasSeguridad +
-                ", preguntasIds=" + preguntasIds +
-                '}';
-    }
+    // Getters y Setters
+    public String getUsername() { return username; }
+    public void setUsername(String username) { this.username = username; }
+    public String getContrasenia() { return contrasenia; }
+    public void setContrasenia(String contrasenia) { this.contrasenia = contrasenia; }
+    public Rol getRol() { return rol; }
+    public void setRol(Rol rol) { this.rol = rol; }
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
+    public String getFechaNacimiento() { return fechaNacimiento; }
+    public void setFechaNacimiento(String fechaNacimiento) { this.fechaNacimiento = fechaNacimiento; }
+    public String getCorreo() { return correo; }
+    public void setCorreo(String correo) { this.correo = correo; }
+    public String getCelular() { return celular; }
+    public void setCelular(String celular) { this.celular = celular; }
+    public List<PreguntaSeguridad> getPreguntasDeSeguridad() { return preguntasDeSeguridad; }
+    public void setPreguntasDeSeguridad(List<PreguntaSeguridad> preguntasDeSeguridad) { this.preguntasDeSeguridad = preguntasDeSeguridad; }
 }

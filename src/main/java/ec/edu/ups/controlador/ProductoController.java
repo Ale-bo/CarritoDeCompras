@@ -8,8 +8,10 @@ import ec.edu.ups.vista.Producto.EliminarProductoView;
 import ec.edu.ups.vista.Producto.ListarProductoView;
 import ec.edu.ups.vista.Producto.ActualizarProductoView;
 
-import javax.swing.JTable;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Collections;
 import java.util.List;
 
@@ -22,125 +24,172 @@ public class ProductoController {
     private final EliminarProductoView eliminarView;
     private final ActualizarProductoView actualizarView;
 
-    public ProductoController(ProductoDAO productoDAO,
-                              MensajeInternacionalizacionHandler mensajes,
-                              AnadirProductoView anadirView,
-                              ListarProductoView listarView,
-                              EliminarProductoView eliminarView,
-                              ActualizarProductoView actualizarView) {
-        this.productoDAO    = productoDAO;
-        this.mensajes       = mensajes;
-        this.anadirView     = anadirView;
-        this.listarView     = listarView;
-        this.eliminarView   = eliminarView;
-        this.actualizarView = actualizarView;
-
-        // Añadir
-        anadirView.getBtnAceptar().addActionListener(e -> crearProducto());
-        anadirView.getBtnLimpiar().addActionListener(e -> anadirView.limpiarCampos());
-
-        // Listar
-        listarView.getBtnListar().addActionListener(e -> listarProductos());
-        listarView.getBtnBuscar().addActionListener(e -> cargarListadoFiltrado());
-
-        // Eliminar
-        eliminarView.getBtnBuscar().addActionListener(e -> buscarProductoParaEliminar());
-        eliminarView.getBtnEliminar().addActionListener(e -> eliminarProductoSeleccionado());
-
-        actualizarView.getBtnBuscar().addActionListener(e -> cargarTablaMod());
-        actualizarView.getBtnActualizar().addActionListener(e -> actualizarProducto());
-        actualizarView.getBtnCancelar().addActionListener(e -> actualizarView.limpiarCampos());
+    public ProductoController(ProductoDAO pDAO, MensajeInternacionalizacionHandler msg,
+                              AnadirProductoView addV, ListarProductoView listV,
+                              EliminarProductoView delV, ActualizarProductoView updV) {
+        this.productoDAO = pDAO;
+        this.mensajes = msg;
+        this.anadirView = addV;
+        this.listarView = listV;
+        this.eliminarView = delV;
+        this.actualizarView = updV;
+        configurarEventos();
     }
 
-    private void crearProducto() {
+    private void configurarEventos() {
+        // --- Añadir Producto ---
+        anadirView.getBtnAceptar().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                crearProducto();
+            }
+        });
+        anadirView.getBtnLimpiar().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                anadirView.limpiarCampos();
+            }
+        });
+
+        // --- Listar Producto ---
+        listarView.getBtnListar().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                listarProductos();
+            }
+        });
+        listarView.getBtnBuscar().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cargarListadoFiltrado();
+            }
+        });
+
+        // --- Actualizar Producto ---
+        actualizarView.getBtnBuscar().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cargarTablaMod();
+            }
+        });
+        actualizarView.getBtnActualizar().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                actualizarProducto();
+            }
+        });
+        actualizarView.getBtnCancelar().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                actualizarView.limpiarCampos();
+            }
+        });
+        actualizarView.getTableProductos().getSelectionModel().addListSelectionListener(this::seleccionarProductoParaActualizar);
+    }
+
+    public void crearProducto() {
         try {
             int codigo = Integer.parseInt(anadirView.getTxtCodigo().getText().trim());
             String nombre = anadirView.getTxtNombre().getText().trim();
             double precio = Double.parseDouble(anadirView.getTxtPrecio().getText().trim());
-            if (nombre.isEmpty()) throw new IllegalArgumentException();
+            if (nombre.isEmpty()) {
+                throw new IllegalArgumentException("El nombre no puede estar vacío.");
+            }
             productoDAO.crear(new Producto(codigo, nombre, precio));
             anadirView.mostrarMensaje(mensajes.get("producto.success.creado"));
             anadirView.limpiarCampos();
         } catch (Exception ex) {
-            anadirView.mostrarMensaje(mensajes.get("producto.error.cod_precio_nombre"));
+            anadirView.mostrarMensaje("Error en los datos: " + ex.getMessage());
         }
     }
 
-    private void listarProductos() {
-        DefaultTableModel m = listarView.getModelo();
-        m.setRowCount(0);
-        for (Producto p : productoDAO.listarTodos()) {
-            m.addRow(new Object[]{p.getCodigo(), p.getNombre(), p.getPrecio()});
-        }
+    public void listarProductos() {
+        DefaultTableModel model = listarView.getModelo();
+        model.setRowCount(0);
+        productoDAO.listarTodos().forEach(p -> model.addRow(new Object[]{p.getCodigo(), p.getNombre(), p.getPrecio()}));
     }
 
-    private void cargarListadoFiltrado() {
-        String txt = listarView.getTxtBuscar().trim().toLowerCase();
-        DefaultTableModel m = listarView.getModelo();
-        m.setRowCount(0);
+    public void cargarListadoFiltrado() {
+        String criterio = listarView.getTxtBuscar().trim().toLowerCase();
+        DefaultTableModel model = listarView.getModelo();
+        model.setRowCount(0);
         productoDAO.listarTodos().stream()
-                .filter(p -> p.getNombre().toLowerCase().contains(txt))
-                .forEach(p -> m.addRow(new Object[]{p.getCodigo(), p.getNombre(), p.getPrecio()}));
+                .filter(p -> p.getNombre().toLowerCase().contains(criterio))
+                .forEach(p -> model.addRow(new Object[]{p.getCodigo(), p.getNombre(), p.getPrecio()}));
     }
 
+    public void cargarTablaMod() {
+        DefaultTableModel model = actualizarView.getTableModel();
+        model.setRowCount(0);
+        productoDAO.listarTodos().forEach(p -> model.addRow(new Object[]{p.getCodigo(), p.getNombre(), p.getPrecio()}));
+    }
+
+    private void seleccionarProductoParaActualizar(ListSelectionEvent e) {
+        if (!e.getValueIsAdjusting()) {
+            int fila = actualizarView.getTableProductos().getSelectedRow();
+            if (fila != -1) {
+                DefaultTableModel model = actualizarView.getTableModel();
+                actualizarView.getTxtCodigo().setText(model.getValueAt(fila, 0).toString());
+                actualizarView.getTxtCodigo().setEnabled(false);
+                actualizarView.getTxtNombre().setText(model.getValueAt(fila, 1).toString());
+                actualizarView.getTxtPrecio().setText(model.getValueAt(fila, 2).toString());
+            }
+        }
+    }
+
+    public void actualizarProducto() {
+        try {
+            int codigo = Integer.parseInt(actualizarView.getTxtCodigo().getText());
+            String nombre = actualizarView.getTxtNombre().getText().trim();
+            double precio = Double.parseDouble(actualizarView.getTxtPrecio().getText().trim());
+            if (nombre.isEmpty()) {
+                actualizarView.mostrarMensaje("El nombre no puede estar vacío.");
+                return;
+            }
+            productoDAO.actualizar(new Producto(codigo, nombre, precio));
+            actualizarView.mostrarMensaje(mensajes.get("producto.success.actualizado"));
+            actualizarView.limpiarCampos();
+            actualizarView.getTxtCodigo().setEnabled(true);
+            cargarTablaMod();
+        } catch (Exception ex) {
+            actualizarView.mostrarMensaje("Error al actualizar el producto.");
+        }
+    }
+
+    // Métodos para EliminarProductoView (asumiendo que se conectan desde otro lado o Main)
     public void buscarProductoParaEliminar() {
         String filtro = eliminarView.getFiltro();
-        String txt    = eliminarView.getTxtBusqueda().trim().toLowerCase();
-        DefaultTableModel m = eliminarView.getModelResultado();
-        m.setRowCount(0);
+        String texto = eliminarView.getTxtBusqueda().trim();
+        DefaultTableModel model = eliminarView.getModelResultado();
+        model.setRowCount(0);
 
         List<Producto> lista;
-        if (filtro.equals(mensajes.get("producto.view.eliminar.filtro.codigo"))) {
+        if (mensajes.get("producto.eliminar.filtro.codigo").equals(filtro)) {
             try {
-                int code = Integer.parseInt(txt);
-                Producto p = productoDAO.buscarPorCodigo(code);
-                lista = p != null ? List.of(p) : Collections.emptyList();
-            } catch (NumberFormatException ex) {
+                int codigo = Integer.parseInt(texto);
+                Producto p = productoDAO.buscarPorCodigo(codigo);
+                lista = (p != null) ? List.of(p) : Collections.emptyList();
+            } catch (NumberFormatException e) {
                 lista = Collections.emptyList();
             }
         } else {
-            lista = productoDAO.buscarPorNombre(txt);
+            lista = productoDAO.buscarPorNombre(texto);
         }
 
-        lista.forEach(p -> m.addRow(new Object[]{p.getCodigo(), p.getNombre(), p.getPrecio()}));
+        for (Producto p : lista) {
+            model.addRow(new Object[]{p.getCodigo(), p.getNombre(), p.getPrecio()});
+        }
     }
 
     public void eliminarProductoSeleccionado() {
         int fila = eliminarView.getTablaResultado().getSelectedRow();
-        if (fila < 0) {
-            eliminarView.mostrarMensaje(mensajes.get("producto.error.seleccione_producto"));
-            return;
-        }
-        int cod = (int) eliminarView.getModelResultado().getValueAt(fila, 0);
-        productoDAO.eliminar(cod);
-        eliminarView.mostrarMensaje(mensajes.get("producto.success.eliminado"));
-        buscarProductoParaEliminar();
-    }
-
-    /** Público: recarga la tabla de modificar */
-    public void cargarTablaMod() {
-        DefaultTableModel m = actualizarView.getTableModel();
-        m.setRowCount(0);
-        for (Producto p : productoDAO.listarTodos()) {
-            m.addRow(new Object[]{p.getCodigo(), p.getNombre(), p.getPrecio()});
-        }
-    }
-
-    /** Público: actualiza el producto seleccionado */
-    public void actualizarProducto() {
-        try {
-            int fila = actualizarView.getTableProductos().getSelectedRow();
-            if (fila < 0) throw new IllegalStateException();
-
-            int codigo = (int) actualizarView.getTableModel().getValueAt(fila, 0);
-            String nombre = actualizarView.getTxtNombre().getText().trim();
-            double precio = Double.parseDouble(actualizarView.getTxtPrecio().getText().trim());
-
-            productoDAO.actualizar(new Producto(codigo, nombre, precio));
-            actualizarView.mostrarMensaje(mensajes.get("producto.success.actualizado"));
-            cargarTablaMod();
-        } catch (Exception e) {
-            actualizarView.mostrarMensaje(mensajes.get("producto.error.formato_invalido"));
+        if (fila >= 0) {
+            int codigo = (int) eliminarView.getModelResultado().getValueAt(fila, 0);
+            productoDAO.eliminar(codigo);
+            eliminarView.mostrarMensaje(mensajes.get("producto.success.eliminado"));
+            buscarProductoParaEliminar();
+        } else {
+            eliminarView.mostrarMensaje("Debe seleccionar un producto para eliminar.");
         }
     }
 }

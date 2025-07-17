@@ -1,45 +1,31 @@
 package ec.edu.ups.dao.impl;
 
 import ec.edu.ups.dao.UsuarioDAO;
+import ec.edu.ups.modelo.PreguntaSeguridad;
 import ec.edu.ups.modelo.Rol;
 import ec.edu.ups.modelo.Usuario;
-
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class UsuarioDAOMemoria implements UsuarioDAO {
-
-    private List<Usuario> usuarios;
+    private final List<Usuario> usuarios;
 
     public UsuarioDAOMemoria() {
         usuarios = new ArrayList<>();
+        List<PreguntaSeguridad> preguntasAdmin = new ArrayList<>();
+        preguntasAdmin.add(new PreguntaSeguridad(1, "Smith"));
+        preguntasAdmin.add(new PreguntaSeguridad(2, "Azul"));
+        preguntasAdmin.add(new PreguntaSeguridad(3, "Pizza"));
 
-        List<Integer> adminPregIds = List.of(1, 2, 3);
-        List<String>  adminResps   = List.of("Smith", "Blue", "Pizza");
-        // --- CREAR ADMIN POR DEFECTO ---
-        Usuario admin = new Usuario(
-                "admin",
-                "12345",
-                "Administrador",
-                "admin@ejemplo.com",
-                "0999999999",
-                adminPregIds,
-                adminResps
-        );
+        Usuario admin = new Usuario("admin", "12345", "Administrador", "admin@super.com", "0991234567", "01/01/2000", preguntasAdmin);
         admin.setRol(Rol.ADMINISTRADOR);
         usuarios.add(admin);
-
-        System.out.println("Usuario ADMIN creado: username="
-                + admin.getUsername()
-                + ", password=" + admin.getContrasenia());
     }
 
     @Override
     public Usuario autenticar(String username, String contrasenia) {
         for (Usuario usuario : usuarios) {
-            if (usuario.getUsername().equals(username)
-                    && usuario.getContrasenia().equals(contrasenia)) {
+            if (usuario.getUsername().equals(username) && usuario.getContrasenia().equals(contrasenia)) {
                 return usuario;
             }
         }
@@ -63,14 +49,7 @@ public class UsuarioDAOMemoria implements UsuarioDAO {
 
     @Override
     public void eliminar(String username) {
-        Iterator<Usuario> iterator = usuarios.iterator();
-        while (iterator.hasNext()) {
-            Usuario usuario = iterator.next();
-            if (usuario.getUsername().equals(username)) {
-                iterator.remove();
-                break;
-            }
-        }
+        usuarios.removeIf(u -> u.getUsername().equals(username));
     }
 
     @Override
@@ -85,14 +64,14 @@ public class UsuarioDAOMemoria implements UsuarioDAO {
 
     @Override
     public List<Usuario> listarTodos() {
-        return usuarios;
+        return new ArrayList<>(usuarios);
     }
 
     @Override
     public List<Usuario> listarPorRol(Rol rol) {
         List<Usuario> encontrados = new ArrayList<>();
         for (Usuario usuario : usuarios) {
-            if (usuario.getRol().equals(rol)) {
+            if (usuario.getRol() == rol) {
                 encontrados.add(usuario);
             }
         }

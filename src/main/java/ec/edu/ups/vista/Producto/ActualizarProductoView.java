@@ -1,17 +1,17 @@
 package ec.edu.ups.vista.Producto;
 
 import ec.edu.ups.controlador.ProductoController;
-import ec.edu.ups.modelo.Producto;
 import ec.edu.ups.util.MensajeInternacionalizacionHandler;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-import java.util.List;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class ActualizarProductoView extends JInternalFrame {
 
-    private final ProductoController productoController;
+    // Se elimina 'final' para poder asignarlo después de la construcción.
+    private ProductoController productoController;
     private final MensajeInternacionalizacionHandler mensajeHandler;
 
     private JPanel panelPrincipal;
@@ -27,10 +27,9 @@ public class ActualizarProductoView extends JInternalFrame {
     private JLabel lblNombre;
     private JLabel lblPrecio;
 
-    public ActualizarProductoView(ProductoController controller,
-                                  MensajeInternacionalizacionHandler mensajeHandler) {
+    // CORRECCIÓN: El constructor ya no recibe el controlador.
+    public ActualizarProductoView(MensajeInternacionalizacionHandler mensajeHandler) {
         super("", true, true, true, true);
-        this.productoController = controller;
         this.mensajeHandler = mensajeHandler;
 
         setContentPane(panelPrincipal);
@@ -40,12 +39,43 @@ public class ActualizarProductoView extends JInternalFrame {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setSize(600, 400);
 
-        modelo = (DefaultTableModel) tblProductos.getModel();
-        actualizarIdioma();
+        // Asegurarse de que el modelo de la tabla esté inicializado
+        if (tblProductos.getModel() instanceof DefaultTableModel) {
+            modelo = (DefaultTableModel) tblProductos.getModel();
+        } else {
+            modelo = new DefaultTableModel();
+            tblProductos.setModel(modelo);
+        }
 
-        btnBuscar.addActionListener(e -> productoController.cargarTablaMod());
-        btnActualizar.addActionListener(e -> productoController.actualizarProducto());
-        btnCancelar.addActionListener(e -> limpiarCampos());
+        actualizarIdioma();
+    }
+
+    // ##### MÉTODO NUEVO Y CORREGIDO #####
+    // Este método permite enlazar la vista con el controlador y configurar los eventos.
+    public void setProductoController(ProductoController controller) {
+        this.productoController = controller;
+
+        // Se configuran los listeners usando clases anónimas.
+        btnBuscar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                productoController.cargarTablaMod();
+            }
+        });
+
+        btnActualizar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                productoController.actualizarProducto();
+            }
+        });
+
+        btnCancelar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                limpiarCampos();
+            }
+        });
     }
 
     public void actualizarIdioma() {
@@ -64,6 +94,7 @@ public class ActualizarProductoView extends JInternalFrame {
         });
     }
 
+    // Getters para los componentes que el controlador necesita
     public JButton getBtnBuscar() {
         return btnBuscar;
     }
@@ -84,6 +115,10 @@ public class ActualizarProductoView extends JInternalFrame {
         return modelo;
     }
 
+    public JTextField getTxtCodigo() {
+        return txtCodigo;
+    }
+
     public JTextField getTxtNombre() {
         return txtNombre;
     }
@@ -94,8 +129,10 @@ public class ActualizarProductoView extends JInternalFrame {
 
     public void limpiarCampos() {
         txtCodigo.setText("");
+        txtCodigo.setEnabled(true); // Se asegura de que el campo se reactive
         txtNombre.setText("");
         txtPrecio.setText("");
+        tblProductos.clearSelection(); // Deselecciona cualquier fila
     }
 
     public void mostrarMensaje(String msg) {

@@ -24,49 +24,14 @@ public class ListarCarritoView extends JInternalFrame {
         super("", true, true, true, true);
         this.mensajes = mensajes;
 
-        // Asegúrate de inicializar el panel y los componentes si no usas diseñador
-        if (panelPrincipal == null) {
-            panelPrincipal = new JPanel(new BorderLayout());
-
-            // Panel superior de búsqueda
-            JPanel panelTop = new JPanel(new FlowLayout(FlowLayout.LEFT));
-            lblBuscar = new JLabel("Buscar:");
-            txtBuscar = new JTextField(15);
-            btnBuscar = new JButton("Buscar");
-            btnListar = new JButton("Listar");
-            panelTop.add(lblBuscar);
-            panelTop.add(txtBuscar);
-            panelTop.add(btnBuscar);
-            panelTop.add(btnListar);
-
-            panelPrincipal.add(panelTop, BorderLayout.NORTH);
-
-            // Tabla
+        // Se asume que los componentes se inicializan desde el archivo .form
+        // Si no usas el diseñador, aquí iría la creación manual de componentes.
+        if (tablaCarritos != null) {
+            modelo = (DefaultTableModel) tablaCarritos.getModel();
+        } else {
+            // Fallback en caso de que el JTable no se enlace desde el .form
             modelo = new DefaultTableModel();
             tablaCarritos = new JTable(modelo);
-            JScrollPane scrollPane = new JScrollPane(tablaCarritos);
-            panelPrincipal.add(scrollPane, BorderLayout.CENTER);
-
-            // Panel inferior de total
-            JPanel panelBottom = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-            JLabel lblTotal = new JLabel("Total Carrito:");
-            textTotal = new JTextField(10);
-            panelBottom.add(lblTotal);
-            panelBottom.add(textTotal);
-
-            panelPrincipal.add(panelBottom, BorderLayout.SOUTH);
-        } else {
-            // Si usas diseñador, asegúrate de inicializar el modelo y asignarlo
-            if (tablaCarritos == null) {
-                // Busca la tabla en el diseñador con otro nombre (ejemplo: table1)
-                // Si no la encuentras, crea una por defecto
-                modelo = new DefaultTableModel();
-                tablaCarritos = new JTable(modelo);
-                JScrollPane scrollPane = new JScrollPane(tablaCarritos);
-                panelPrincipal.add(scrollPane, BorderLayout.CENTER);
-            } else {
-                modelo = (DefaultTableModel) tablaCarritos.getModel();
-            }
         }
 
         setContentPane(panelPrincipal);
@@ -87,9 +52,8 @@ public class ListarCarritoView extends JInternalFrame {
 
         modelo.setColumnIdentifiers(new Object[]{
                 mensajes.get("carrito.listar.tabla.column.codigo"),
-                mensajes.get("carrito.listar.tabla.column.nombre"),
-                mensajes.get("carrito.listar.tabla.column.cantidad"),
-                mensajes.get("carrito.listar.tabla.column.precio")
+                "Fecha", // Ajustar si tienes clave de internacionalización
+                mensajes.get("carrito.listar.tabla.column.total")
         });
     }
 
@@ -111,5 +75,14 @@ public class ListarCarritoView extends JInternalFrame {
 
     public DefaultTableModel getModelo() {
         return modelo;
+    }
+
+    // ##### MÉTODO AÑADIDO PARA SOLUCIONAR EL ERROR #####
+    /**
+     * Muestra un cuadro de diálogo con un mensaje para el usuario.
+     * @param mensaje El texto que se mostrará en el diálogo.
+     */
+    public void mostrarMensaje(String mensaje) {
+        JOptionPane.showMessageDialog(this, mensaje);
     }
 }
