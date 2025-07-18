@@ -5,7 +5,7 @@ import ec.edu.ups.util.MensajeInternacionalizacionHandler;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.URL;
+import java.io.File; // Necesario para JFileChooser
 
 public class LoginView extends JFrame {
 
@@ -17,33 +17,37 @@ public class LoginView extends JFrame {
     private JComboBox<String> comboIdiomas;
     private JPanel panelPrincipal;
     private JPanel panel;
+    private JLabel lblTipoAlmacenamiento;
+    private JComboBox<String> comboTipoAlmacenamiento;
+    private JLabel lblRutaAlmacenamiento;
+    private JTextField txtRutaAlmacenamiento;
+    private JButton btnSeleccionarRuta;
+
+
     private static final String[] IDIOMAS = {"Español", "English", "Français"};
     private UsuarioController usuarioController;
 
     public LoginView(MensajeInternacionalizacionHandler mh) {
         this.mensajeHandler = mh;
-        setContentPane(panelPrincipal); // Es importante que esto esté antes de manipular componentes
+        setContentPane(panelPrincipal);
         initComponents();
         setTitle(mensajeHandler.get("login.titulo"));
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setSize(600, 300);
+        setSize(700, 300); // Ajusta el tamaño de la ventana si es necesario
         setLocationRelativeTo(null);
         actualizarIdioma();
     }
 
     private void initComponents() {
-        // 1. Poblar el JComboBox de idiomas para que no esté vacío
-        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(IDIOMAS);
-        comboIdiomas.setModel(model);
+        // --- Configuración existente de idioma ---
+        DefaultComboBoxModel<String> modelIdiomas = new DefaultComboBoxModel<>(IDIOMAS);
+        comboIdiomas.setModel(modelIdiomas);
 
-        // 2. Añadir el ActionListener que reacciona al cambio
         comboIdiomas.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String sel = (String) comboIdiomas.getSelectedItem();
                 if (sel == null) return;
-
-                // Cambia el idioma en el manejador
                 switch (sel) {
                     case "English":
                         mensajeHandler.setLenguaje("en", "US");
@@ -55,20 +59,62 @@ public class LoginView extends JFrame {
                         mensajeHandler.setLenguaje("es", "EC");
                         break;
                 }
-
-                // Llama al método que actualiza todos los textos en la ventana
                 actualizarIdioma();
             }
         });
+
+        // --- Configuración NUEVA para el ComboBox de Tipo de Almacenamiento ---
+        DefaultComboBoxModel<String> modelAlmacenamiento = new DefaultComboBoxModel<>();
+        modelAlmacenamiento.addElement(mensajeHandler.get("login.almacenamiento.memoria"));
+        modelAlmacenamiento.addElement(mensajeHandler.get("login.almacenamiento.texto"));
+        modelAlmacenamiento.addElement(mensajeHandler.get("login.almacenamiento.binario"));
+        comboTipoAlmacenamiento.setModel(modelAlmacenamiento);
+
+        // Ocultar campos de ruta inicialmente
+        lblRutaAlmacenamiento.setVisible(false);
+        txtRutaAlmacenamiento.setVisible(false);
+        btnSeleccionarRuta.setVisible(false);
+        txtRutaAlmacenamiento.setEditable(false); // La ruta se selecciona, no se escribe manualmente
+
+        // Listener para el ComboBox de tipo de almacenamiento
+        comboTipoAlmacenamiento.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String seleccion = (String) comboTipoAlmacenamiento.getSelectedItem();
+                boolean esArchivo = seleccion != null &&
+                        (seleccion.equals(mensajeHandler.get("login.almacenamiento.texto")) ||
+                                seleccion.equals(mensajeHandler.get("login.almacenamiento.binario")));
+
+                lblRutaAlmacenamiento.setVisible(esArchivo);
+                txtRutaAlmacenamiento.setVisible(esArchivo);
+                btnSeleccionarRuta.setVisible(esArchivo);
+
+                if (!esArchivo) {
+                    txtRutaAlmacenamiento.setText(""); // Limpiar campo si no es tipo archivo
+                }
+            }
+        });
+
+        // Listener para el botón "Seleccionar Ruta"
+        btnSeleccionarRuta.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY); // Solo directorios
+                int opcion = fileChooser.showOpenDialog(LoginView.this); // 'LoginView.this' para el padre
+
+                if (opcion == JFileChooser.APPROVE_OPTION) {
+                    File directorioSeleccionado = fileChooser.getSelectedFile();
+                    txtRutaAlmacenamiento.setText(directorioSeleccionado.getAbsolutePath());
+                }
+            }
+        });
     }
-
-
 
     public void setUsuarioController(UsuarioController ctrl) {
         this.usuarioController = ctrl;
     }
 
-    // Este método se encarga de actualizar todos los textos de la UI
     public void actualizarIdioma() {
         setTitle(mensajeHandler.get("login.titulo"));
         lblUsuario.setText(mensajeHandler.get("login.label.usuario"));
@@ -77,16 +123,54 @@ public class LoginView extends JFrame {
         btnRegistrarse.setText(mensajeHandler.get("login.boton.registrarse"));
         btnOlvidarContrasenia.setText(mensajeHandler.get("login.olvidarContrasenia"));
 
-        // Notifica al controlador para que actualice otras vistas si es necesario
+        // Actualizar textos de los nuevos componentes
+        lblTipoAlmacenamiento.setText(mensajeHandler.get("login.label.almacenamiento"));
+        lblRutaAlmacenamiento.setText(mensajeHandler.get("login.label.ruta"));
+        btnSeleccionarRuta.setText(mensajeHandler.get("login.boton.seleccionarRuta"));
+
+        // Actualizar ítems del JComboBox de Almacenamiento
+        // Se hace en initComponents y con el listener de idioma en Main
+        // Pero para asegurar que si se cambia el idioma, los ítems se actualicen:
+        DefaultComboBoxModel<String> modelAlmacenamiento = (DefaultComboBoxModel<String>) comboTipoAlmacenamiento.getModel();
+        String seleccionActual = (String) comboTipoAlmacenamiento.getSelectedItem(); // Guardar la selección actual
+
+        modelAlmacenamiento.removeAllElements();
+        modelAlmacenamiento.addElement(mensajeHandler.get("login.almacenamiento.memoria"));
+        modelAlmacenamiento.addElement(mensajeHandler.get("login.almacenamiento.texto"));
+        modelAlmacenamiento.addElement(mensajeHandler.get("login.almacenamiento.binario"));
+
+        // Intentar restaurar la selección previa, si no existe, seleccionar el primero
+        if (seleccionActual != null && modelAlmacenamiento.getIndexOf(seleccionActual) != -1) {
+            comboTipoAlmacenamiento.setSelectedItem(seleccionActual);
+        } else {
+            comboTipoAlmacenamiento.setSelectedIndex(0);
+        }
+
+        // Activar el listener del combo para actualizar la visibilidad de la ruta si es necesario
+        // Esto es importante para que los campos de ruta se oculten/muestren correctamente
+        // al cambiar el idioma y recargar los ítems del combo.
+        // Simulamos un evento de acción para que el listener se dispare.
+        if (comboTipoAlmacenamiento.getActionListeners().length > 0) {
+            comboTipoAlmacenamiento.getActionListeners()[0].actionPerformed(
+                    new ActionEvent(comboTipoAlmacenamiento, ActionEvent.ACTION_PERFORMED, null)
+            );
+        }
+
+
         if (usuarioController != null) {
             usuarioController.actualizarIdiomaEnVistasLogin();
         }
-
-        // Forza la actualización visual de toda la ventana
         SwingUtilities.updateComponentTreeUI(this);
     }
 
-    // Getters para que el controlador acceda a los componentes
+    public JComboBox<String> getComboTipoAlmacenamiento() {
+        return comboTipoAlmacenamiento;
+    }
+
+    public JTextField getTxtRutaAlmacenamiento() {
+        return txtRutaAlmacenamiento;
+    }
+
     public JButton getBtnIniciarSesion() { return btnIniciarSesion; }
     public JButton getBtnRegistrarse() { return btnRegistrarse; }
     public JButton getBtnOlvidar() { return btnOlvidarContrasenia; }
