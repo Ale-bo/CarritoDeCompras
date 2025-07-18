@@ -21,26 +21,28 @@ public class LoginView extends JFrame {
 
     public LoginView(MensajeInternacionalizacionHandler mh) {
         this.mensajeHandler = mh;
-        initComponents(); // Llama a la inicialización de componentes
-        setContentPane(panelPrincipal);
+        setContentPane(panelPrincipal); // Es importante que esto esté antes de manipular componentes
+        initComponents();
         setTitle(mensajeHandler.get("login.titulo"));
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setSize(600, 400);
+        setSize(600, 300);
         setLocationRelativeTo(null);
         actualizarIdioma();
     }
 
     private void initComponents() {
-        // Se asume que el panel y los componentes se inicializan desde el archivo .form
-        // Si no, aquí iría la creación manual de cada componente (new JLabel(), etc.)
+        // 1. Poblar el JComboBox de idiomas para que no esté vacío
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(IDIOMAS);
+        comboIdiomas.setModel(model);
 
-        // --- Listener para el ComboBox de Idiomas (usando Clase Anónima) ---
+        // 2. Añadir el ActionListener que reacciona al cambio
         comboIdiomas.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String sel = (String) comboIdiomas.getSelectedItem();
                 if (sel == null) return;
 
+                // Cambia el idioma en el manejador
                 switch (sel) {
                     case "English":
                         mensajeHandler.setLenguaje("en", "US");
@@ -48,31 +50,22 @@ public class LoginView extends JFrame {
                     case "Français":
                         mensajeHandler.setLenguaje("fr", "FR");
                         break;
-                    default:
+                    default: // "Español"
                         mensajeHandler.setLenguaje("es", "EC");
                         break;
                 }
 
-                // Actualiza los textos en esta ventana
+                // Llama al método que actualiza todos los textos en la ventana
                 actualizarIdioma();
-                SwingUtilities.updateComponentTreeUI(LoginView.this);
-
-                // Notifica al controlador para que actualice otras ventanas si es necesario
-                if (usuarioController != null) {
-                    usuarioController.actualizarIdiomaEnVistasLogin();
-                }
             }
         });
     }
 
-    /**
-     * Guarda una referencia al controlador. Los listeners de los botones
-     * ya se configuran dentro del propio controlador.
-     */
     public void setUsuarioController(UsuarioController ctrl) {
         this.usuarioController = ctrl;
     }
 
+    // Este método se encarga de actualizar todos los textos de la UI
     public void actualizarIdioma() {
         setTitle(mensajeHandler.get("login.titulo"));
         lblUsuario.setText(mensajeHandler.get("login.label.usuario"));
@@ -80,6 +73,14 @@ public class LoginView extends JFrame {
         btnIniciarSesion.setText(mensajeHandler.get("login.boton.iniciar"));
         btnRegistrarse.setText(mensajeHandler.get("login.boton.registrarse"));
         btnOlvidarContrasenia.setText(mensajeHandler.get("login.olvidarContrasenia"));
+
+        // Notifica al controlador para que actualice otras vistas si es necesario
+        if (usuarioController != null) {
+            usuarioController.actualizarIdiomaEnVistasLogin();
+        }
+
+        // Forza la actualización visual de toda la ventana
+        SwingUtilities.updateComponentTreeUI(this);
     }
 
     // Getters para que el controlador acceda a los componentes

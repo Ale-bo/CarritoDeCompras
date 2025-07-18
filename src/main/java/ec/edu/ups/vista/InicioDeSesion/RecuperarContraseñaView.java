@@ -5,7 +5,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-public class RecuperarContraseñaView extends JInternalFrame {
+// CAMBIO: Ahora extiende JDialog en lugar de JInternalFrame
+public class RecuperarContraseñaView extends JDialog {
 
     private JPanel panelPrincipal;
     private JTextField textUsername;
@@ -16,9 +17,11 @@ public class RecuperarContraseñaView extends JInternalFrame {
     private JLabel lblUsuario, lblCorreo, lblPregunta, lblRespuesta;
     private int preguntaIdActual;
 
-    public RecuperarContraseñaView(MensajeInternacionalizacionHandler mh) {
-        super(mh.get("usuario.view.recuperar.titulo"), true, true, true, true);
-        panelPrincipal = new JPanel(new GridLayout(5, 2, 5, 5));
+    // CAMBIO: El constructor ahora recibe el "dueño" (la ventana de Login)
+    public RecuperarContraseñaView(Frame owner, MensajeInternacionalizacionHandler mh) {
+        super(owner, mh.get("usuario.view.recuperar.titulo"), true); // true para hacerlo modal
+
+        setSize(300, 250);
 
         lblUsuario   = new JLabel();
         textUsername = new JTextField();
@@ -30,6 +33,7 @@ public class RecuperarContraseñaView extends JInternalFrame {
 
         lblPregunta  = new JLabel();
         comboPreguntas = new JComboBox<>();
+        comboPreguntas.setEnabled(false);
 
         lblRespuesta = new JLabel();
         textRespuesta = new JTextField();
@@ -49,8 +53,10 @@ public class RecuperarContraseñaView extends JInternalFrame {
         panelPrincipal.add(btnCancelar);
 
         setContentPane(panelPrincipal);
-        actualizarIdioma(mh); // Se llama para establecer los textos iniciales
+        actualizarIdioma(mh);
         pack();
+        setLocationRelativeTo(owner); // Centrar relativo a la ventana de Login
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
     public void actualizarIdioma(MensajeInternacionalizacionHandler mh) {
