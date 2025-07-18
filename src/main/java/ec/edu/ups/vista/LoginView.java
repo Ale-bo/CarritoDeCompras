@@ -5,6 +5,7 @@ import ec.edu.ups.util.MensajeInternacionalizacionHandler;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
 
 public class LoginView extends JFrame {
 
@@ -60,6 +61,8 @@ public class LoginView extends JFrame {
             }
         });
     }
+
+
 
     public void setUsuarioController(UsuarioController ctrl) {
         this.usuarioController = ctrl;

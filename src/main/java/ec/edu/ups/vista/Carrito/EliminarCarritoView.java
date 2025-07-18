@@ -11,7 +11,6 @@ public class EliminarCarritoView extends JInternalFrame {
 
     private JPanel panelPrincipal;
     private JLabel lblUsuario;
-    private JComboBox<String> comboFiltro;
     private JTextField txtBusqueda;
     private JButton btnBuscar;
     private JTable tablaResultado;
@@ -53,7 +52,6 @@ public class EliminarCarritoView extends JInternalFrame {
         });
     }
 
-    public JComboBox<String> getFiltro() { return comboFiltro; }
     public JTextField getTxtBusqueda() { return txtBusqueda; }
     public JButton getBtnBuscar() { return btnBuscar; }
     public JTable getTablaResultado() { return tablaResultado; }

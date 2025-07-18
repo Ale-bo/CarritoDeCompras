@@ -146,7 +146,7 @@ public class MenuPrincipalView extends JFrame {
         menuProducto.setVisible(false); // Oculta gestión de productos para usuarios normales
         menuItemRegistrarUsuario.setVisible(false);
         menuItemListarUsuarios.setVisible(false);
-        menuItemModificarUsuario.setVisible(false);
+        //menuItemModificarUsuario.setVisible(false);
         menuItemEliminarUsuario.setVisible(false);
     }
 

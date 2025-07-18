@@ -33,7 +33,43 @@ public class RegistrarUsuarioView extends JFrame {
     }
 
     private void cargarPreguntas() {
-        // ... (código sin cambios)
+        // Genera una lista de IDs del 1 al 10
+        List<Integer> ids = new ArrayList<>();
+        for (int i = 1; i <= 10; i++) {
+            ids.add(i);
+        }
+
+        // Obtiene los textos de las preguntas de seguridad desde el manejador de mensajes
+        List<String> textos = new ArrayList<>();
+        for (int i = 1; i <= 10; i++) {
+            textos.add(mensajeHandler.get("preguntas.seguridad." + i));
+        }
+
+        // Crea una lista de índices para mezclar
+        List<Integer> indices = new ArrayList<>();
+        for (int i = 0; i < 10; i++) indices.add(i);
+        Collections.shuffle(indices); // Mezcla los índices para seleccionar preguntas aleatorias
+
+        // Limpia los JComboBox antes de añadir nuevos ítems
+        if (comboPreguntasSeguridad1 != null) comboPreguntasSeguridad1.removeAllItems();
+        if (comboPreguntasSeguridad2 != null) comboPreguntasSeguridad2.removeAllItems();
+        if (comboPreguntasSeguridad3 != null) comboPreguntasSeguridad3.removeAllItems();
+
+        // Selecciona 3 preguntas aleatorias usando los índices mezclados
+        int idx1 = indices.get(0);
+        int idx2 = indices.get(1);
+        int idx3 = indices.get(2);
+
+        // Añade las preguntas seleccionadas a los JComboBox
+        if (comboPreguntasSeguridad1 != null) comboPreguntasSeguridad1.addItem(textos.get(idx1));
+        if (comboPreguntasSeguridad2 != null) comboPreguntasSeguridad2.addItem(textos.get(idx2));
+        if (comboPreguntasSeguridad3 != null) comboPreguntasSeguridad3.addItem(textos.get(idx3));
+
+        // Guarda los IDs de las preguntas seleccionadas
+        preguntasIdsSeleccionadas.clear();
+        preguntasIdsSeleccionadas.add(ids.get(idx1));
+        preguntasIdsSeleccionadas.add(ids.get(idx2));
+        preguntasIdsSeleccionadas.add(ids.get(idx3));
     }
 
     public List<Integer> getPreguntasIdsSeleccionadas() {
@@ -41,12 +77,27 @@ public class RegistrarUsuarioView extends JFrame {
     }
 
     public void actualizarIdioma(MensajeInternacionalizacionHandler mensajeHandler) {
-        // ... (código sin cambios)
+        this.mensajeHandler = mensajeHandler;
+        setTitle(mensajeHandler.get("usuario.registro"));
+        if (NombresCompletos != null) NombresCompletos.setText(mensajeHandler.get("usuario.nombreCompleto") + ":");
+        if (FechadeNaciemiento != null) FechadeNaciemiento.setText(mensajeHandler.get("usuario.fechaNacimiento") + ":");
+        if (CorreoElectronico != null) CorreoElectronico.setText(mensajeHandler.get("usuario.correo") + ":");
+        if (Celular != null) Celular.setText(mensajeHandler.get("usuario.telefono") + ":");
+        if (NombreUsusario != null) NombreUsusario.setText(mensajeHandler.get("usuario.username") + ":");
+        if (Contrasena != null) Contrasena.setText(mensajeHandler.get("usuario.contrasenia"));
+        if (confContrasena != null) confContrasena.setText(mensajeHandler.get("usuario.confirmar"));
+        if (PreguntasdeSeguridad != null) PreguntasdeSeguridad.setText(mensajeHandler.get("usuario.preguntasSeguridad"));
+        if (lblDia != null) lblDia.setText(mensajeHandler.get("usuario.dia") + ":");
+        if (lblMes != null) lblMes.setText(mensajeHandler.get("usuario.mes") + ":");
+        if (lblAño != null) lblAño.setText(mensajeHandler.get("usuario.anio") + ":");
+        if (registrarButton != null) registrarButton.setText(mensajeHandler.get("usuario.registrar"));
+        if (cancelarButton != null) cancelarButton.setText(mensajeHandler.get("usuario.cancelar"));
+        cargarPreguntas();
+        SwingUtilities.updateComponentTreeUI(this);
     }
 
-    // --- NUEVO MÉTODO DE VALIDACIÓN ---
+
     public boolean validarCampos() {
-        // Validación de campos vacíos
         if (getTextnombre().getText().trim().isEmpty() ||
                 getTextcorreo().getText().trim().isEmpty() ||
                 getTextcelular().getText().trim().isEmpty() ||

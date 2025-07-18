@@ -5,6 +5,7 @@ import ec.edu.ups.util.MensajeInternacionalizacionHandler;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
 
 public class AnadirProductoView extends JInternalFrame {
 
@@ -49,6 +50,8 @@ public class AnadirProductoView extends JInternalFrame {
         btnAceptar.setText(mensajeHandler.get("producto.view.anadir.aceptar"));
         btnLimpiar.setText(mensajeHandler.get("producto.view.anadir.limpiar"));
     }
+
+
 
     public JTextField getTxtCodigo() {
         return txtCodigo;

@@ -21,7 +21,8 @@ public class UsuarioController {
 
     private final UsuarioDAO usuarioDAO;
     private final LoginView loginView;
-    private final RegistrarUsuarioView registrarFrameView;
+    private final RegistrarUsuarioView registrarFrameView; // Este es el JFrame de registro inicial
+    private final RegistroView registrarInternalView; // Este es el JInternalFrame de registro
     private final ListarUsuarioView listarView;
     private final EliminarUsuarioView eliminarView;
     private final ActualizarUsuarioView actualizarView;
@@ -29,10 +30,15 @@ public class UsuarioController {
     private final MensajeInternacionalizacionHandler mensajeHandler;
     private Usuario usuarioActual;
 
-    public UsuarioController(UsuarioDAO uDAO, LoginView lV, RegistrarUsuarioView rV, ListarUsuarioView liV, EliminarUsuarioView dV, ActualizarUsuarioView upV, MenuPrincipalView pV, MensajeInternacionalizacionHandler msg) {
+    // AÑADIR 'RegistroView internalRegView' al constructor
+    public UsuarioController(UsuarioDAO uDAO, LoginView lV, RegistrarUsuarioView rV,
+                             ListarUsuarioView liV, EliminarUsuarioView dV, ActualizarUsuarioView upV,
+                             MenuPrincipalView pV, MensajeInternacionalizacionHandler msg,
+                             RegistroView internalRegView) { // Nuevo parámetro
         this.usuarioDAO = uDAO;
         this.loginView = lV;
         this.registrarFrameView = rV;
+        this.registrarInternalView = internalRegView; // Asignar la instancia de RegistroView
         this.listarView = liV;
         this.eliminarView = dV;
         this.actualizarView = upV;
@@ -46,8 +52,13 @@ public class UsuarioController {
         loginView.getBtnRegistrarse().addActionListener(e -> abrirRegistro());
         loginView.getBtnOlvidar().addActionListener(e -> abrirRecuperacion());
 
+        // Eventos para el JFrame de registro inicial (RegistrarUsuarioView)
         registrarFrameView.getRegistrarButton().addActionListener(e -> registrarUsuario());
         registrarFrameView.getCancelarButton().addActionListener(e -> cancelarRegistro());
+
+        // Eventos para el JInternalFrame de registro (RegistroView)
+        registrarInternalView.getBtnCrear().addActionListener(e -> registrarUsuarioInterno());
+        registrarInternalView.getBtnCancelar().addActionListener(e -> cancelarRegistroInterno());
 
         listarView.getBtnBuscar().addActionListener(e -> buscarUsuarios());
         listarView.getBtnRefrescar().addActionListener(e -> cargarUsuarios());
@@ -104,6 +115,7 @@ public class UsuarioController {
         }
     }
 
+    // Método para registrar usuario desde el JFrame de registro inicial
     private void registrarUsuario() {
         if (!registrarFrameView.validarCampos()) {
             return;
@@ -135,10 +147,63 @@ public class UsuarioController {
         cancelarRegistro();
     }
 
+
     private void cancelarRegistro() {
         registrarFrameView.limpiarCampos();
         registrarFrameView.dispose();
     }
+
+
+    private void registrarUsuarioInterno() {
+        if (!registrarInternalView.validarCampos()) { // Asumiendo que RegistroView tiene un método validarCampos()
+            return;
+        }
+
+        String username = registrarInternalView.getTxtUsuario().getText().trim();
+        if (usuarioDAO.buscarPorUsername(username) != null) {
+            registrarInternalView.mostrarMensaje("El nombre de usuario ya existe. Por favor, elija otro.");
+            return;
+        }
+
+        String pwd1 = new String(registrarInternalView.getTxtPassword().getPassword());
+
+
+        List<PreguntaSeguridad> preguntas = new ArrayList<>();
+
+        if (registrarInternalView.getPreguntasIdsSeleccionadas() != null && registrarInternalView.getPreguntasIdsSeleccionadas().size() >= 3) {
+            preguntas.add(new PreguntaSeguridad(registrarInternalView.getPreguntasIdsSeleccionadas().get(0), registrarInternalView.getTxtRespuesta1().getText().trim()));
+            preguntas.add(new PreguntaSeguridad(registrarInternalView.getPreguntasIdsSeleccionadas().get(1), registrarInternalView.getTxtRespuesta2().getText().trim()));
+            preguntas.add(new PreguntaSeguridad(registrarInternalView.getPreguntasIdsSeleccionadas().get(2), registrarInternalView.getTxtRespuesta3().getText().trim()));
+        } else {
+            // Manejo si no hay preguntas de seguridad seleccionadas o no están expuestas correctamente
+            registrarInternalView.mostrarMensaje("Debe seleccionar y responder las preguntas de seguridad.");
+            return;
+        }
+
+        // Obtener la fecha de nacimiento de los JSpinners en RegistroView
+        int dia = (Integer) registrarInternalView.getSpnDia().getValue();
+        int mes = (Integer) registrarInternalView.getSpnMes().getValue();
+        int anio = (Integer) registrarInternalView.getSpnAño().getValue();
+        String fechaNacimiento = String.format("%02d/%02d/%04d", dia, mes, anio);
+
+
+        Usuario nuevo = new Usuario(username, pwd1,
+                registrarInternalView.getTxtNombresComp().getText().trim(),
+                registrarInternalView.getTxtCorreo().getText().trim(),
+                registrarInternalView.getTxtTelefono().getText().trim(),
+                fechaNacimiento, preguntas); // Usar la fecha formateada
+
+        usuarioDAO.crear(nuevo);
+        registrarInternalView.mostrarMensaje("Usuario registrado con éxito.");
+        cancelarRegistroInterno();
+    }
+
+    // NUEVO MÉTODO: Para cancelar el registro desde el JInternalFrame (RegistroView)
+    private void cancelarRegistroInterno() {
+        registrarInternalView.limpiarCampos();
+        registrarInternalView.dispose(); // Cierra la ventana interna
+    }
+
 
     private void recuperarContraseña(RecuperarContraseñaView recuperarDialog, Usuario u) {
         if (u == null) return;
@@ -270,6 +335,9 @@ public class UsuarioController {
     public void actualizarIdiomaEnVistasLogin() {
         if (registrarFrameView != null) {
             registrarFrameView.actualizarIdioma(mensajeHandler);
+        }
+        if (registrarInternalView != null) {
+            registrarInternalView.actualizarIdioma(); // Llama al método para actualizar el idioma
         }
     }
 }

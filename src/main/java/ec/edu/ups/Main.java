@@ -54,7 +54,7 @@ public class Main {
             ActualizarCarritoView modCartView = new ActualizarCarritoView(msgH);
 
             // --- 2. CREACIÓN DE CONTROLADORES ---
-            UsuarioController usuarioCtrl = new UsuarioController(usuarioDAO, loginView, registrarFrameView, listarUserView, eliminarUserView, modUserView, principal, msgH);
+            UsuarioController usuarioCtrl = new UsuarioController(usuarioDAO, loginView, registrarFrameView, listarUserView, eliminarUserView, modUserView, principal, msgH, registrarInternalView);
             ProductoController productoCtrl = new ProductoController(productoDAO, msgH, addProdView, listProdView, delProdView, modProdView);
             CarritoController carritoCtrl = new CarritoController(carritoDAO, productoDAO, msgH, addCartView, listCartView, delCartView, modCartView);
 
