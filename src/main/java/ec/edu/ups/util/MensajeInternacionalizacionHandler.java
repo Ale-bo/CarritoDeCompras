@@ -1,8 +1,8 @@
 package ec.edu.ups.util;
 
 import java.util.Locale;
-import java.util.ResourceBundle;
 import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 public class MensajeInternacionalizacionHandler {
 
@@ -10,19 +10,15 @@ public class MensajeInternacionalizacionHandler {
     private Locale locale;
 
     public MensajeInternacionalizacionHandler(String lenguaje, String pais) {
-        this.locale = new Locale.Builder()
-                .setLanguage(lenguaje)
-                .setRegion(pais)
-                .build();
-        this.bundle = ResourceBundle.getBundle("mensajes", locale);
+        setLenguaje(lenguaje, pais);
     }
 
     public String get(String key) {
         try {
             return bundle.getString(key);
         } catch (MissingResourceException e) {
-            System.err.println("Error: La clave '" + key + "' no fue encontrada.");
-            return key;
+            System.err.println("Error: La clave '" + key + "' no fue encontrada en el archivo de propiedades.");
+            return "!!" + key + "!!"; // Retorna la clave para identificarla fácilmente en la UI
         }
     }
 
