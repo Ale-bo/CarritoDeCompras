@@ -15,74 +15,49 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class UsuarioController {
 
     private final UsuarioDAO usuarioDAO;
     private final LoginView loginView;
-    private final RegistrarUsuarioView registrarView;
+    private final RegistrarUsuarioView registrarFrameView;
     private final ListarUsuarioView listarView;
     private final EliminarUsuarioView eliminarView;
     private final ActualizarUsuarioView actualizarView;
-    private final RecuperarContraseñaView recuperarView;
     private final MenuPrincipalView principal;
     private final MensajeInternacionalizacionHandler mensajeHandler;
     private Usuario usuarioActual;
 
-    public UsuarioController(UsuarioDAO uDAO, LoginView lV, RegistrarUsuarioView rV, ListarUsuarioView liV, EliminarUsuarioView dV, ActualizarUsuarioView upV, RecuperarContraseñaView recV, MenuPrincipalView pV, MensajeInternacionalizacionHandler msg) {
+    public UsuarioController(UsuarioDAO uDAO, LoginView lV, RegistrarUsuarioView rV, ListarUsuarioView liV, EliminarUsuarioView dV, ActualizarUsuarioView upV, MenuPrincipalView pV, MensajeInternacionalizacionHandler msg) {
         this.usuarioDAO = uDAO;
         this.loginView = lV;
-        this.registrarView = rV;
+        this.registrarFrameView = rV;
         this.listarView = liV;
         this.eliminarView = dV;
         this.actualizarView = upV;
-        this.recuperarView = recV;
         this.principal = pV;
         this.mensajeHandler = msg;
         configurarEventos();
     }
 
     private void configurarEventos() {
-        loginView.getBtnIniciarSesion().addActionListener(new ActionListener() {
-            @Override public void actionPerformed(ActionEvent e) { autenticarUsuario(); }
-        });
-        loginView.getBtnRegistrarse().addActionListener(new ActionListener() {
-            @Override public void actionPerformed(ActionEvent e) { abrirRegistro(); }
-        });
-        loginView.getBtnOlvidar().addActionListener(new ActionListener() {
-            @Override public void actionPerformed(ActionEvent e) { abrirRecuperacion(); }
-        });
-        registrarView.getRegistrarButton().addActionListener(new ActionListener() {
-            @Override public void actionPerformed(ActionEvent e) { registrarUsuario(); }
-        });
-        registrarView.getCancelarButton().addActionListener(new ActionListener() {
-            @Override public void actionPerformed(ActionEvent e) { cancelarRegistro(); }
-        });
-        listarView.getBtnBuscar().addActionListener(new ActionListener() {
-            @Override public void actionPerformed(ActionEvent e) { buscarUsuarios(); }
-        });
-        listarView.getBtnRefrescar().addActionListener(new ActionListener() {
-            @Override public void actionPerformed(ActionEvent e) { cargarUsuarios(); }
-        });
-        eliminarView.getBtnBuscar().addActionListener(new ActionListener() {
-            @Override public void actionPerformed(ActionEvent e) { buscarUsuarioParaEliminar(); }
-        });
-        eliminarView.getBtnEliminar().addActionListener(new ActionListener() {
-            @Override public void actionPerformed(ActionEvent e) { eliminarUsuarioSeleccionado(); }
-        });
-        actualizarView.getBtnBuscar().addActionListener(new ActionListener() {
-            @Override public void actionPerformed(ActionEvent e) { cargarUsuariosParaActualizar(); }
-        });
-        actualizarView.getBtnActualizar().addActionListener(new ActionListener() {
-            @Override public void actionPerformed(ActionEvent e) { actualizarUsuario(); }
-        });
+        loginView.getBtnIniciarSesion().addActionListener(e -> autenticarUsuario());
+        loginView.getBtnRegistrarse().addActionListener(e -> abrirRegistro());
+        loginView.getBtnOlvidar().addActionListener(e -> abrirRecuperacion());
+
+        registrarFrameView.getRegistrarButton().addActionListener(e -> registrarUsuario());
+        registrarFrameView.getCancelarButton().addActionListener(e -> cancelarRegistro());
+
+        listarView.getBtnBuscar().addActionListener(e -> buscarUsuarios());
+        listarView.getBtnRefrescar().addActionListener(e -> cargarUsuarios());
+
+        eliminarView.getBtnBuscar().addActionListener(e -> buscarUsuarioParaEliminar());
+        eliminarView.getBtnEliminar().addActionListener(e -> eliminarUsuarioSeleccionado());
+
+        actualizarView.getBtnBuscar().addActionListener(e -> cargarUsuariosParaActualizar());
+        actualizarView.getBtnActualizar().addActionListener(e -> actualizarUsuario());
         actualizarView.getTblUsuarios().getSelectionModel().addListSelectionListener(this::seleccionarUsuarioParaActualizar);
-        recuperarView.addRecuperarListener(new ActionListener() {
-            @Override public void actionPerformed(ActionEvent e) { recuperarContraseña(); }
-        });
-        recuperarView.addCancelarListener(new ActionListener() {
-            @Override public void actionPerformed(ActionEvent e) { recuperarView.dispose(); }
-        });
     }
 
     public void autenticarUsuario() {
@@ -97,65 +72,94 @@ public class UsuarioController {
         }
     }
 
+    public Usuario getUsuarioActual() {
+        return usuarioActual;
+    }
+
     public void abrirRegistro() {
-        registrarView.actualizarIdioma(mensajeHandler);
-        registrarView.setVisible(true);
+        registrarFrameView.actualizarIdioma(mensajeHandler);
+        registrarFrameView.setVisible(true);
     }
 
     public void abrirRecuperacion() {
         String usr = JOptionPane.showInputDialog(loginView, mensajeHandler.get("login.label.usuario"));
         if (usr == null || usr.trim().isEmpty()) return;
+
         Usuario u = usuarioDAO.buscarPorUsername(usr.trim());
         if (u != null && u.getPreguntasDeSeguridad() != null && !u.getPreguntasDeSeguridad().isEmpty()) {
+            RecuperarContraseñaView recuperarDialog = new RecuperarContraseñaView(loginView, mensajeHandler);
+
             Random rand = new Random();
             PreguntaSeguridad p = u.getPreguntasDeSeguridad().get(rand.nextInt(u.getPreguntasDeSeguridad().size()));
-            recuperarView.setUsername(u.getUsername());
-            recuperarView.setCorreo(u.getCorreo());
-            recuperarView.setPregunta(mensajeHandler.get("preguntas.seguridad." + p.getPreguntaId()), p.getPreguntaId());
-            principal.getDesktopPane().add(recuperarView);
-            recuperarView.setVisible(true);
+
+            recuperarDialog.setUsername(u.getUsername());
+            recuperarDialog.setCorreo(u.getCorreo());
+            recuperarDialog.setPregunta(mensajeHandler.get("preguntas.seguridad." + p.getPreguntaId()), p.getPreguntaId());
+
+            recuperarDialog.addRecuperarListener(e -> recuperarContraseña(recuperarDialog, u));
+            recuperarDialog.addCancelarListener(e -> recuperarDialog.dispose());
+            recuperarDialog.setVisible(true);
         } else {
             loginView.mostrarMensaje(mensajeHandler.get("usuario.error.no_encontrado"));
         }
     }
 
-    public void actualizarIdiomaEnVistasLogin() {
-        // Llama al método para actualizar textos en la vista de registro
-        if (registrarView != null) {
-            registrarView.actualizarIdioma(mensajeHandler);
-            SwingUtilities.updateComponentTreeUI(registrarView);
-        }
-
-        // Llama al método para actualizar textos en la vista de recuperación
-        if (recuperarView != null) {
-            recuperarView.actualizarIdioma(mensajeHandler);
-            SwingUtilities.updateComponentTreeUI(recuperarView);
-        }
-    }
-
     private void registrarUsuario() {
-        String pwd1 = new String(registrarView.getPasswordcontrasena().getPassword());
-        String pwd2 = new String(registrarView.getPasswordconfcontrasena().getPassword());
-        if (!pwd1.equals(pwd2)) {
-            registrarView.mostrarMensaje("Las contraseñas no coinciden.");
+        if (!registrarFrameView.validarCampos()) {
             return;
         }
+
+        String username = registrarFrameView.getTextususario().getText().trim();
+        if (usuarioDAO.buscarPorUsername(username) != null) {
+            registrarFrameView.mostrarMensaje("El nombre de usuario ya existe. Por favor, elija otro.");
+            return;
+        }
+
+        String pwd1 = new String(registrarFrameView.getPasswordcontrasena().getPassword());
+
         List<PreguntaSeguridad> preguntas = new ArrayList<>();
-        preguntas.add(new PreguntaSeguridad(registrarView.getPreguntasIdsSeleccionadas().get(0), registrarView.getRespuesta1()));
-        preguntas.add(new PreguntaSeguridad(registrarView.getPreguntasIdsSeleccionadas().get(1), registrarView.getRespuesta2()));
-        preguntas.add(new PreguntaSeguridad(registrarView.getPreguntasIdsSeleccionadas().get(2), registrarView.getRespuesta3()));
-        Usuario nuevo = new Usuario(registrarView.getTextususario().getText().trim(), pwd1, registrarView.getTextnombre().getText().trim(), registrarView.getTextcorreo().getText().trim(), registrarView.getTextcelular().getText().trim(), "fecha", preguntas);
+        preguntas.add(new PreguntaSeguridad(registrarFrameView.getPreguntasIdsSeleccionadas().get(0), registrarFrameView.getRespuesta1()));
+        preguntas.add(new PreguntaSeguridad(registrarFrameView.getPreguntasIdsSeleccionadas().get(1), registrarFrameView.getRespuesta2()));
+        preguntas.add(new PreguntaSeguridad(registrarFrameView.getPreguntasIdsSeleccionadas().get(2), registrarFrameView.getRespuesta3()));
+
+        String fecha = registrarFrameView.getTextDia().getText() + "/" + registrarFrameView.getTextMes().getText() + "/" + registrarFrameView.getTextAnio().getText();
+
+        Usuario nuevo = new Usuario(username, pwd1,
+                registrarFrameView.getTextnombre().getText().trim(),
+                registrarFrameView.getTextcorreo().getText().trim(),
+                registrarFrameView.getTextcelular().getText().trim(),
+                fecha, preguntas);
+
         usuarioDAO.crear(nuevo);
-        registrarView.mostrarMensaje("Usuario registrado con éxito.");
+        registrarFrameView.mostrarMensaje("Usuario registrado con éxito.");
         cancelarRegistro();
     }
 
     private void cancelarRegistro() {
-        registrarView.limpiarCampos();
-        registrarView.setVisible(false);
+        registrarFrameView.limpiarCampos();
+        registrarFrameView.dispose();
     }
 
-    private void cargarUsuarios() {
+    private void recuperarContraseña(RecuperarContraseñaView recuperarDialog, Usuario u) {
+        if (u == null) return;
+
+        boolean ok = u.getPreguntasDeSeguridad().stream()
+                .anyMatch(p -> p.getPreguntaId() == recuperarDialog.getPreguntaIdActual() && p.getRespuesta().equalsIgnoreCase(recuperarDialog.getRespuesta1()));
+
+        if (ok) {
+            String nPwd = JOptionPane.showInputDialog(recuperarDialog, "Ingrese la nueva contraseña:");
+            if (nPwd != null && !nPwd.trim().isEmpty()) {
+                u.setContrasenia(nPwd);
+                usuarioDAO.actualizar(u);
+                recuperarDialog.mostrarMensaje("Contraseña actualizada.");
+                recuperarDialog.dispose();
+            }
+        } else {
+            recuperarDialog.mostrarMensaje("Respuesta incorrecta.");
+        }
+    }
+
+    public void cargarUsuarios() {
         DefaultTableModel model = listarView.getTableModel();
         model.setRowCount(0);
         usuarioDAO.listarTodos().forEach(u -> model.addRow(new Object[]{u.getUsername(), u.getRol().toString()}));
@@ -165,51 +169,37 @@ public class UsuarioController {
         String criterio = listarView.getTxtBuscar().getText().trim().toLowerCase();
         DefaultTableModel model = listarView.getTableModel();
         model.setRowCount(0);
-        usuarioDAO.listarTodos().stream()
+
+        List<Usuario> usuariosFiltrados = usuarioDAO.listarTodos().stream()
                 .filter(u -> u.getUsername().toLowerCase().contains(criterio) || u.getRol().toString().toLowerCase().contains(criterio))
-                .forEach(u -> model.addRow(new Object[]{u.getUsername(), u.getRol().toString()}));
+                .collect(Collectors.toList());
+
+        usuariosFiltrados.forEach(u -> model.addRow(new Object[]{u.getUsername(), u.getRol().toString()}));
     }
 
-    private void buscarUsuarioParaEliminar() {
-        // 1. Obtener los datos de la vista
+    public void buscarUsuarioParaEliminar() {
         String criterio = eliminarView.getTxtBuscar().getText().trim().toLowerCase();
         String filtroSeleccionado = (String) eliminarView.getCbxFiltro().getSelectedItem();
         DefaultTableModel model = eliminarView.getTableModel();
-
-        // 2. Limpiar la tabla antes de mostrar los nuevos resultados
         model.setRowCount(0);
 
-        // 3. Obtener la lista completa de usuarios del DAO
-        List<Usuario> todosLosUsuarios = usuarioDAO.listarTodos();
+        if (filtroSeleccionado == null) return;
 
-        // 4. Filtrar la lista según el criterio y el filtro seleccionados
-        List<Usuario> usuariosEncontrados = new ArrayList<>();
-
-        // Comprueba si se ha seleccionado un filtro
-        if (filtroSeleccionado != null) {
-            for (Usuario usuario : todosLosUsuarios) {
-                // Si el filtro es por "Usuario" (Username)
-                if (filtroSeleccionado.equals(mensajeHandler.get("usuario.view.eliminar.filtro.username"))) {
-                    if (usuario.getUsername().toLowerCase().contains(criterio)) {
-                        usuariosEncontrados.add(usuario);
+        List<Usuario> usuariosEncontrados = usuarioDAO.listarTodos().stream()
+                .filter(usuario -> {
+                    if (filtroSeleccionado.equals(mensajeHandler.get("usuario.view.eliminar.filtro.username"))) {
+                        return usuario.getUsername().toLowerCase().contains(criterio);
+                    } else if (filtroSeleccionado.equals(mensajeHandler.get("usuario.view.eliminar.filtro.rol"))) {
+                        return usuario.getRol().toString().toLowerCase().contains(criterio);
                     }
-                }
-                // Si el filtro es por "Rol"
-                else if (filtroSeleccionado.equals(mensajeHandler.get("usuario.view.eliminar.filtro.rol"))) {
-                    if (usuario.getRol().toString().toLowerCase().contains(criterio)) {
-                        usuariosEncontrados.add(usuario);
-                    }
-                }
-            }
-        }
+                    return false;
+                })
+                .collect(Collectors.toList());
 
-        // 5. Poblar la tabla con los resultados encontrados
         if (usuariosEncontrados.isEmpty()) {
             eliminarView.mostrarMensaje("No se encontraron usuarios con ese criterio.");
         } else {
-            for (Usuario u : usuariosEncontrados) {
-                model.addRow(new Object[]{u.getUsername(), u.getRol().toString()});
-            }
+            usuariosEncontrados.forEach(u -> model.addRow(new Object[]{u.getUsername(), u.getRol().toString()}));
         }
     }
 
@@ -223,12 +213,13 @@ public class UsuarioController {
             }
             usuarioDAO.eliminar(username);
             eliminarView.mostrarMensaje("Usuario eliminado.");
+            buscarUsuarioParaEliminar();
         } else {
-            eliminarView.mostrarMensaje("Seleccione un usuario.");
+            eliminarView.mostrarMensaje("Seleccione un usuario de la tabla para eliminar.");
         }
     }
 
-    private void cargarUsuariosParaActualizar() {
+    public void cargarUsuariosParaActualizar() {
         DefaultTableModel model = actualizarView.getTableModel();
         model.setRowCount(0);
         usuarioDAO.listarTodos().forEach(u -> model.addRow(new Object[]{u.getUsername(), u.getRol().toString()}));
@@ -243,8 +234,8 @@ public class UsuarioController {
                 if (u != null) {
                     actualizarView.getTxtUsername().setText(u.getUsername());
                     actualizarView.getTxtUsername().setEnabled(false);
-                    actualizarView.getTxtPassword().setText(u.getContrasenia());
-                    actualizarView.getPasswordconfcontrasenia().setText(u.getContrasenia());
+                    actualizarView.getTxtPassword().setText("");
+                    actualizarView.getPasswordconfcontrasenia().setText("");
                 }
             }
         }
@@ -254,41 +245,31 @@ public class UsuarioController {
         String username = actualizarView.getTxtUsername().getText();
         String pass1 = new String(actualizarView.getTxtPassword().getPassword());
         String pass2 = new String(actualizarView.getPasswordconfcontrasenia().getPassword());
+
+        if (pass1.isEmpty() || pass2.isEmpty()) {
+            actualizarView.mostrarMensaje("Los campos de contraseña no pueden estar vacíos.");
+            return;
+        }
+
         if (!pass1.equals(pass2)) {
             actualizarView.mostrarMensaje("Las contraseñas no coinciden.");
             return;
         }
+
         Usuario u = usuarioDAO.buscarPorUsername(username);
         if (u != null) {
             u.setContrasenia(pass1);
             usuarioDAO.actualizar(u);
-            actualizarView.mostrarMensaje("Usuario actualizado.");
+            actualizarView.mostrarMensaje("Usuario actualizado con éxito.");
             actualizarView.limpiarCampos();
             actualizarView.getTxtUsername().setEnabled(true);
             cargarUsuariosParaActualizar();
         }
     }
 
-    private void recuperarContraseña() {
-        Usuario u = usuarioDAO.buscarPorUsername(recuperarView.getUsername());
-        if (u == null) return;
-        boolean ok = u.getPreguntasDeSeguridad().stream()
-                .anyMatch(p -> p.getPreguntaId() == recuperarView.getPreguntaIdActual() && p.getRespuesta().equalsIgnoreCase(recuperarView.getRespuesta1()));
-
-        if (ok) {
-            String nPwd = JOptionPane.showInputDialog(recuperarView, "Ingrese la nueva contraseña:");
-            if (nPwd != null && !nPwd.trim().isEmpty()) {
-                u.setContrasenia(nPwd);
-                usuarioDAO.actualizar(u);
-                recuperarView.mostrarMensaje("Contraseña actualizada.");
-                recuperarView.dispose();
-            }
-        } else {
-            recuperarView.mostrarMensaje("Respuesta incorrecta.");
+    public void actualizarIdiomaEnVistasLogin() {
+        if (registrarFrameView != null) {
+            registrarFrameView.actualizarIdioma(mensajeHandler);
         }
-    }
-
-    public Usuario getUsuarioActual() {
-        return usuarioActual;
     }
 }

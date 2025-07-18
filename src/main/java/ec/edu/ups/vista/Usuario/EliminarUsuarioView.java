@@ -21,69 +21,48 @@ public class EliminarUsuarioView extends JInternalFrame {
     public EliminarUsuarioView(MensajeInternacionalizacionHandler mensajeHandler) {
         this.mensajeHandler = mensajeHandler;
 
-        // Asegúrate de inicializar el JComboBox
-        cbxFiltro = new JComboBox<>();  // Inicialización del JComboBox
-
         setContentPane(panelPrincipal);
         setClosable(true);
         setIconifiable(true);
         setResizable(true);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setSize(600, 400);
+        pack();
 
-        model = new DefaultTableModel(new Object[]{"Username", "Rol"}, 0);
-        tblUsuarios.setModel(model);
-
-        actualizarIdioma(); // Actualiza los textos de la vista
+        model = (DefaultTableModel) tblUsuarios.getModel();
+        actualizarIdioma();
     }
 
-
-    // Método para actualizar los textos y etiquetas de la interfaz con los valores en el idioma seleccionado
     public void actualizarIdioma() {
         if (mensajeHandler == null) return;
-
         setTitle(mensajeHandler.get("usuario.view.eliminar.titulo"));
         btnBuscar.setText(mensajeHandler.get("usuario.view.eliminar.buscar"));
         btnEliminar.setText(mensajeHandler.get("usuario.view.eliminar.eliminar"));
 
-        cbxFiltro.removeAllItems();
-        cbxFiltro.addItem(mensajeHandler.get("usuario.view.eliminar.filtro.username"));
-        cbxFiltro.addItem(mensajeHandler.get("usuario.view.eliminar.filtro.rol"));
+        // Limpiar y añadir items internacionalizados
+        if (cbxFiltro != null) {
+            String selected = (String) cbxFiltro.getSelectedItem();
+            cbxFiltro.removeAllItems();
+            cbxFiltro.addItem(mensajeHandler.get("usuario.view.eliminar.filtro.username"));
+            cbxFiltro.addItem(mensajeHandler.get("usuario.view.eliminar.filtro.rol"));
+            cbxFiltro.setSelectedItem(selected);
+        }
+
+        model.setColumnIdentifiers(new Object[]{"Username", "Rol"});
     }
 
-    // Métodos para acceder a los datos de la vista
-    public JTable getTableUsuarios() {
-        return tblUsuarios;
-    }
+    public JTable getTableUsuarios() { return tblUsuarios; }
+    public DefaultTableModel getTableModel() { return model; }
+    public JButton getBtnEliminar() { return btnEliminar; }
+    public JComboBox<String> getCbxFiltro() { return cbxFiltro; }
+    public JTextField getTxtBuscar() { return txtBuscar; }
+    public JButton getBtnBuscar() { return btnBuscar; }
 
-    public DefaultTableModel getTableModel() {
-        return model;
-    }
-
-    public JButton getBtnEliminar() {
-        return btnEliminar;
-    }
-
-    public JComboBox<String> getCbxFiltro() {
-        return cbxFiltro;
-    }
-
-    public JTextField getTxtBuscar() {
-        return txtBuscar;
-    }
-
-    public JButton getBtnBuscar() {
-        return btnBuscar;
-    }
-
-    // Método para mostrar un mensaje en la vista
     public void mostrarMensaje(String mensaje) {
         JOptionPane.showMessageDialog(this, mensaje);
     }
 
-    // Método para limpiar los campos de búsqueda
     public void limpiarCampos() {
         txtBuscar.setText("");
-        cbxFiltro.setSelectedIndex(0);  // Resetear la selección del filtro
+        if (cbxFiltro != null) cbxFiltro.setSelectedIndex(0);
     }
 }

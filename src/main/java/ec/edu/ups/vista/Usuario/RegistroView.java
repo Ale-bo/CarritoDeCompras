@@ -47,6 +47,7 @@ public class RegistroView extends JInternalFrame {
     public RegistroView(MensajeInternacionalizacionHandler mensajeHandler) {
         super(mensajeHandler.get("usuario.view.registrar.titulo"));
         this.mensajeHandler = mensajeHandler;
+        setSize(400, 400);
         setContentPane(panelPrincipal);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         pack();
