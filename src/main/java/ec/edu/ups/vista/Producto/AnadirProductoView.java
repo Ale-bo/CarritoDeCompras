@@ -1,12 +1,15 @@
 package ec.edu.ups.vista.Producto;
 
+import ec.edu.ups.controlador.ProductoController;
 import ec.edu.ups.util.MensajeInternacionalizacionHandler;
-
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class AnadirProductoView extends JInternalFrame {
 
     private final MensajeInternacionalizacionHandler mensajeHandler;
+    private ProductoController productoController;
 
     private JPanel panelPrincipal;
     private JTextField txtCodigo;
@@ -19,13 +22,12 @@ public class AnadirProductoView extends JInternalFrame {
     private JLabel lblPrecio;
 
     public AnadirProductoView(MensajeInternacionalizacionHandler mensajeHandler) {
-        super(mensajeHandler.get("producto.view.anadir.titulo"),
-                true, true, true, true);
+        super("", true, true, true, true);
         this.mensajeHandler = mensajeHandler;
 
         setContentPane(panelPrincipal);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setSize(400, 250);
+        pack();
         setClosable(true);
         setIconifiable(true);
         setResizable(true);
@@ -33,9 +35,12 @@ public class AnadirProductoView extends JInternalFrame {
         actualizarIdioma();
     }
 
-    /**
-     * Refresca todos los textos desde el bundle
-     */
+    // --- MÉTODO AÑADIDO PARA ENLAZAR EL CONTROLADOR ---
+    public void setProductoController(ProductoController productoController) {
+        this.productoController = productoController;
+        // Se podrían añadir listeners aquí si fuera necesario, pero el controlador ya los tiene
+    }
+
     public void actualizarIdioma() {
         setTitle(mensajeHandler.get("producto.view.anadir.titulo"));
         lblCodigo.setText(mensajeHandler.get("producto.view.anadir.codigo") + ":");
@@ -66,7 +71,8 @@ public class AnadirProductoView extends JInternalFrame {
     }
 
     public void mostrarMensaje(String key) {
-        JOptionPane.showMessageDialog(this, mensajeHandler.get(key));
+        // Se ajusta para recibir el mensaje directamente, no la clave
+        JOptionPane.showMessageDialog(this, key);
     }
 
     public void limpiarCampos() {
@@ -74,5 +80,4 @@ public class AnadirProductoView extends JInternalFrame {
         txtNombre.setText("");
         txtPrecio.setText("");
     }
-
 }

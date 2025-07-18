@@ -69,7 +69,7 @@ public class ProductoController {
         actualizarView.getBtnBuscar().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cargarTablaMod();
+                cargarProductoParaActualizar();
             }
         });
         actualizarView.getBtnActualizar().addActionListener(new ActionListener() {
@@ -95,6 +95,10 @@ public class ProductoController {
             if (nombre.isEmpty()) {
                 throw new IllegalArgumentException("El nombre no puede estar vacío.");
             }
+            if (productoDAO.buscarPorCodigo(codigo) != null) {
+                anadirView.mostrarMensaje("El código del producto ya existe.");
+                return;
+            }
             productoDAO.crear(new Producto(codigo, nombre, precio));
             anadirView.mostrarMensaje(mensajes.get("producto.success.creado"));
             anadirView.limpiarCampos();
@@ -118,10 +122,20 @@ public class ProductoController {
                 .forEach(p -> model.addRow(new Object[]{p.getCodigo(), p.getNombre(), p.getPrecio()}));
     }
 
-    public void cargarTablaMod() {
-        DefaultTableModel model = actualizarView.getTableModel();
-        model.setRowCount(0);
-        productoDAO.listarTodos().forEach(p -> model.addRow(new Object[]{p.getCodigo(), p.getNombre(), p.getPrecio()}));
+    public void cargarProductoParaActualizar() {
+        try {
+            int codigo = Integer.parseInt(actualizarView.getTxtCodigo().getText());
+            Producto p = productoDAO.buscarPorCodigo(codigo);
+            if (p != null) {
+                actualizarView.getTxtCodigo().setEnabled(false);
+                actualizarView.getTxtNombre().setText(p.getNombre());
+                actualizarView.getTxtPrecio().setText(String.valueOf(p.getPrecio()));
+            } else {
+                actualizarView.mostrarMensaje("Producto no encontrado.");
+            }
+        } catch (NumberFormatException e) {
+            actualizarView.mostrarMensaje("Ingrese un código numérico válido.");
+        }
     }
 
     private void seleccionarProductoParaActualizar(ListSelectionEvent e) {
@@ -149,16 +163,13 @@ public class ProductoController {
             productoDAO.actualizar(new Producto(codigo, nombre, precio));
             actualizarView.mostrarMensaje(mensajes.get("producto.success.actualizado"));
             actualizarView.limpiarCampos();
-            actualizarView.getTxtCodigo().setEnabled(true);
-            cargarTablaMod();
         } catch (Exception ex) {
             actualizarView.mostrarMensaje("Error al actualizar el producto.");
         }
     }
 
-    // Métodos para EliminarProductoView (asumiendo que se conectan desde otro lado o Main)
     public void buscarProductoParaEliminar() {
-        String filtro = eliminarView.getFiltro();
+        String filtro = (String) eliminarView.getComboFiltro().getSelectedItem();
         String texto = eliminarView.getTxtBusqueda().trim();
         DefaultTableModel model = eliminarView.getModelResultado();
         model.setRowCount(0);

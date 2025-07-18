@@ -10,7 +10,6 @@ import java.awt.event.ActionListener;
 
 public class ActualizarProductoView extends JInternalFrame {
 
-    // Se elimina 'final' para poder asignarlo después de la construcción.
     private ProductoController productoController;
     private final MensajeInternacionalizacionHandler mensajeHandler;
 
@@ -27,7 +26,6 @@ public class ActualizarProductoView extends JInternalFrame {
     private JLabel lblNombre;
     private JLabel lblPrecio;
 
-    // CORRECCIÓN: El constructor ya no recibe el controlador.
     public ActualizarProductoView(MensajeInternacionalizacionHandler mensajeHandler) {
         super("", true, true, true, true);
         this.mensajeHandler = mensajeHandler;
@@ -37,45 +35,14 @@ public class ActualizarProductoView extends JInternalFrame {
         setIconifiable(true);
         setResizable(true);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setSize(600, 400);
+        pack();
 
-        // Asegurarse de que el modelo de la tabla esté inicializado
-        if (tblProductos.getModel() instanceof DefaultTableModel) {
-            modelo = (DefaultTableModel) tblProductos.getModel();
-        } else {
-            modelo = new DefaultTableModel();
-            tblProductos.setModel(modelo);
-        }
-
+        modelo = (DefaultTableModel) tblProductos.getModel();
         actualizarIdioma();
     }
 
-    // ##### MÉTODO NUEVO Y CORREGIDO #####
-    // Este método permite enlazar la vista con el controlador y configurar los eventos.
     public void setProductoController(ProductoController controller) {
         this.productoController = controller;
-
-        // Se configuran los listeners usando clases anónimas.
-        btnBuscar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                productoController.cargarTablaMod();
-            }
-        });
-
-        btnActualizar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                productoController.actualizarProducto();
-            }
-        });
-
-        btnCancelar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                limpiarCampos();
-            }
-        });
     }
 
     public void actualizarIdioma() {
@@ -94,7 +61,6 @@ public class ActualizarProductoView extends JInternalFrame {
         });
     }
 
-    // Getters para los componentes que el controlador necesita
     public JButton getBtnBuscar() {
         return btnBuscar;
     }
@@ -129,10 +95,11 @@ public class ActualizarProductoView extends JInternalFrame {
 
     public void limpiarCampos() {
         txtCodigo.setText("");
-        txtCodigo.setEnabled(true); // Se asegura de que el campo se reactive
+        txtCodigo.setEnabled(true);
         txtNombre.setText("");
         txtPrecio.setText("");
-        tblProductos.clearSelection(); // Deselecciona cualquier fila
+        tblProductos.clearSelection();
+        ((DefaultTableModel)tblProductos.getModel()).setRowCount(0);
     }
 
     public void mostrarMensaje(String msg) {

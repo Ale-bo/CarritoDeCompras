@@ -18,11 +18,9 @@ public class EliminarProductoView extends JInternalFrame {
     private JButton btnEliminar;
 
     private DefaultTableModel modelo;
-    // Se elimina 'final' para poder asignarlo más tarde
     private ProductoController productoController;
     private final MensajeInternacionalizacionHandler mensajes;
 
-    // CORRECCIÓN: El constructor ya no recibe el controlador.
     public EliminarProductoView(MensajeInternacionalizacionHandler mensajes) {
         super("", true, true, true, true);
         this.mensajes = mensajes;
@@ -32,25 +30,15 @@ public class EliminarProductoView extends JInternalFrame {
         setIconifiable(true);
         setResizable(true);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setSize(600, 400);
+        pack();
 
-        // Asegurarse de que el modelo de la tabla esté inicializado
-        if (tablaResultado.getModel() instanceof DefaultTableModel) {
-            modelo = (DefaultTableModel) tablaResultado.getModel();
-        } else {
-            modelo = new DefaultTableModel();
-            tablaResultado.setModel(modelo);
-        }
-
+        modelo = (DefaultTableModel) tablaResultado.getModel();
         actualizarIdioma();
     }
 
-    // ##### MÉTODO NUEVO Y CORREGIDO #####
-    // Permite enlazar la vista con el controlador y configurar los eventos.
     public void setProductoController(ProductoController controller) {
         this.productoController = controller;
 
-        // Se configuran los listeners usando clases anónimas.
         btnBuscar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -82,8 +70,8 @@ public class EliminarProductoView extends JInternalFrame {
         });
     }
 
-    public String getFiltro() {
-        return (String) comboFiltro.getSelectedItem();
+    public JComboBox<String> getComboFiltro() {
+        return comboFiltro;
     }
 
     public String getTxtBusqueda() {
@@ -108,5 +96,12 @@ public class EliminarProductoView extends JInternalFrame {
 
     public void mostrarMensaje(String s) {
         JOptionPane.showMessageDialog(this, s);
+    }
+
+    public void limpiarCampos() {
+        txtBusqueda.setText("");
+        txtBusqueda.setEnabled(true);
+        txtBusqueda.requestFocus();
+        ((DefaultTableModel)tablaResultado.getModel()).setRowCount(0);
     }
 }

@@ -1,5 +1,6 @@
 package ec.edu.ups.vista.Producto;
 
+import ec.edu.ups.controlador.ProductoController;
 import ec.edu.ups.util.MensajeInternacionalizacionHandler;
 
 import javax.swing.*;
@@ -17,6 +18,7 @@ public class ListarProductoView extends JInternalFrame {
 
     private DefaultTableModel modelo;
     private final MensajeInternacionalizacionHandler mensajes;
+    private ProductoController productoController;
 
     public ListarProductoView(MensajeInternacionalizacionHandler mensajes) {
         super("", true, true, true, true);
@@ -27,16 +29,19 @@ public class ListarProductoView extends JInternalFrame {
         setIconifiable(true);
         setResizable(true);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        pack();
 
         modelo = (DefaultTableModel) tablaProductos.getModel();
-        tablaProductos.setModel(modelo);
-
         actualizarIdioma();
-        pack();
+    }
+
+    public void setProductoController(ProductoController productoController){
+        this.productoController = productoController;
     }
 
     public void actualizarIdioma() {
         setTitle(mensajes.get("producto.listar.titulo"));
+        lblNombre.setText(mensajes.get("producto.listar.tabla.column.nombre"));
         btnBuscar.setText(mensajes.get("producto.listar.btn.buscar"));
         btnListar.setText(mensajes.get("producto.listar.btn.listar"));
 
@@ -63,5 +68,4 @@ public class ListarProductoView extends JInternalFrame {
         return modelo;
     }
 }
-
 
