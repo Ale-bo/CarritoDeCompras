@@ -17,7 +17,7 @@ public class UsuarioDAOMemoria implements UsuarioDAO {
         preguntasAdmin.add(new PreguntaSeguridad(2, "Azul"));
         preguntasAdmin.add(new PreguntaSeguridad(3, "Pizza"));
 
-        Usuario admin = new Usuario("admin", "12345", "Administrador", "admin@super.com", "0991234567", "01/01/2000", preguntasAdmin);
+        Usuario admin = new Usuario("0107415069", "Admin,001@", "Administrador", "admin@super.com", "0991234567", "01/01/2000", preguntasAdmin);
         admin.setRol(Rol.ADMINISTRADOR);
         usuarios.add(admin);
     }
