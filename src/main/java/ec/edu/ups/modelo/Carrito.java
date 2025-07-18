@@ -74,8 +74,7 @@ public class Carrito {
     }
 
     public double calcularIVA() {
-        double subtotal = calcularSubtotal();
-        return subtotal * IVA;
+        return calcularSubtotal() * IVA;
     }
 
     public double calcularTotal() {
@@ -87,7 +86,7 @@ public class Carrito {
         return "Carrito{" +
                 "IVA=" + IVA +
                 ", codigo=" + codigo +
-                ", fechaCreacion=" + fechaCreacion +
+                ", fechaCreacion=" + fechaCreacion.getTime() +
                 ", items=" + items +
                 '}';
     }

@@ -4,22 +4,22 @@ import ec.edu.ups.controlador.CarritoController;
 import ec.edu.ups.util.MensajeInternacionalizacionHandler;
 
 import javax.swing.*;
-import java.awt.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class AnadirCarritoView extends JInternalFrame {
 
     private JPanel panelPrincipal;
     private JTextField txtCodigo;
     private JTextField txtCantidad;
-    private JButton btnAceptar;
+    private JButton btnGuardar;
     private JButton btnLimpiar;
     private JLabel DatosDelProducto;
     private JLabel Codigo;
     private JLabel Precio;
     private JLabel Cantidad;
-    private JButton btnBuscar;
-    private JButton btnAñadir;
-    private JButton btnGuardar;
+    private JButton btnBuscar;// Note: The variable is btnAnadir (with 'n')
     private JTextField txtNombre;
     private JTextField txtPrecio;
     private JTable tableCarrito;
@@ -27,171 +27,88 @@ public class AnadirCarritoView extends JInternalFrame {
     private JTextField txtIva;
     private JTextField txtSubtotal;
     private JLabel Nombre;
-    private JLabel lblCodigo;
-    private JLabel lblCantidad;
+    private JButton btnAñadir;
+    private JLabel lblSubtotal;
+    private JLabel lblIva;
+    private JLabel lblTotal;
 
     private CarritoController carritoController;
     private final MensajeInternacionalizacionHandler mensajes;
+    private DefaultTableModel tableModel;
 
     public AnadirCarritoView(MensajeInternacionalizacionHandler mensajes) {
         super("", true, true, true, true);
         this.mensajes = mensajes;
-
-        initComponents(); // PRIMERO INICIALIZA COMPONENTES
 
         setContentPane(panelPrincipal);
         setClosable(true);
         setIconifiable(true);
         setResizable(true);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-
-        actualizarIdioma();
         pack();
-    }
 
-    // Inicializa TODOS los componentes
-    private void initComponents() {
-        panelPrincipal = new JPanel();
-        panelPrincipal.setLayout(null); // Puedes cambiar por otro layout si prefieres
-
-        // Etiquetas y campos de producto
-        DatosDelProducto = new JLabel("Datos del Producto");
-        DatosDelProducto.setBounds(20, 10, 200, 25);
-        panelPrincipal.add(DatosDelProducto);
-
-        Codigo = new JLabel("Código:");
-        Codigo.setBounds(20, 45, 80, 25);
-        panelPrincipal.add(Codigo);
-
-        txtCodigo = new JTextField();
-        txtCodigo.setBounds(100, 45, 100, 25);
-        panelPrincipal.add(txtCodigo);
-
-        Nombre = new JLabel("Nombre:");
-        Nombre.setBounds(220, 45, 80, 25);
-        panelPrincipal.add(Nombre);
-
-        txtNombre = new JTextField();
-        txtNombre.setBounds(300, 45, 120, 25);
-        panelPrincipal.add(txtNombre);
-
-        Precio = new JLabel("Precio:");
-        Precio.setBounds(20, 80, 80, 25);
-        panelPrincipal.add(Precio);
-
-        txtPrecio = new JTextField();
-        txtPrecio.setBounds(100, 80, 100, 25);
-        panelPrincipal.add(txtPrecio);
-
-        Cantidad = new JLabel("Cantidad:");
-        Cantidad.setBounds(220, 80, 80, 25);
-        panelPrincipal.add(Cantidad);
-
-        txtCantidad = new JTextField();
-        txtCantidad.setBounds(300, 80, 120, 25);
-        panelPrincipal.add(txtCantidad);
-
-        // Botones principales
-        btnBuscar = new JButton("Buscar");
-        btnBuscar.setBounds(450, 45, 90, 25);
-        panelPrincipal.add(btnBuscar);
-
-        btnAñadir = new JButton("Añadir");
-        btnAñadir.setBounds(450, 80, 90, 25);
-        panelPrincipal.add(btnAñadir);
-
-        btnAceptar = new JButton("Aceptar");
-        btnAceptar.setBounds(20, 120, 100, 30);
-        panelPrincipal.add(btnAceptar);
-
-        btnLimpiar = new JButton("Limpiar");
-        btnLimpiar.setBounds(130, 120, 100, 30);
-        panelPrincipal.add(btnLimpiar);
-
-        btnGuardar = new JButton("Guardar");
-        btnGuardar.setBounds(240, 120, 100, 30);
-        panelPrincipal.add(btnGuardar);
-
-        // Tabla del carrito
-        tableCarrito = new JTable();
-        JScrollPane tableScroll = new JScrollPane(tableCarrito);
-        tableScroll.setBounds(20, 170, 520, 120);
-        panelPrincipal.add(tableScroll);
-
-        // Subtotales, IVA y Total
-        JLabel lblSubtotal = new JLabel("Subtotal:");
-        lblSubtotal.setBounds(350, 300, 60, 25);
-        panelPrincipal.add(lblSubtotal);
-
-        txtSubtotal = new JTextField();
-        txtSubtotal.setBounds(420, 300, 120, 25);
-        panelPrincipal.add(txtSubtotal);
-
-        JLabel lblIva = new JLabel("IVA:");
-        lblIva.setBounds(350, 330, 60, 25);
-        panelPrincipal.add(lblIva);
-
-        txtIva = new JTextField();
-        txtIva.setBounds(420, 330, 120, 25);
-        panelPrincipal.add(txtIva);
-
-        JLabel lblTotal = new JLabel("Total:");
-        lblTotal.setBounds(350, 360, 60, 25);
-        panelPrincipal.add(lblTotal);
-
-        txtTotal = new JTextField();
-        txtTotal.setBounds(420, 360, 120, 25);
-        panelPrincipal.add(txtTotal);
-
-        // Etiquetas internacionales para cambiar idioma
-        lblCodigo = Codigo;        // Asocia a la label principal de código
-        lblCantidad = Cantidad;    // Asocia a la label principal de cantidad
+        tableModel = (DefaultTableModel) tableCarrito.getModel();
+        actualizarIdioma();
     }
 
     public void setCarritoController(CarritoController carritoController) {
         this.carritoController = carritoController;
-        btnAceptar.addActionListener(e -> this.carritoController.crearCarrito());
-        btnLimpiar.addActionListener(e -> limpiarCampos());
     }
 
     public void actualizarIdioma() {
         setTitle(mensajes.get("carrito.anadir.titulo"));
-        lblCodigo.setText(mensajes.get("carrito.anadir.lbl.codigo"));
-        lblCantidad.setText(mensajes.get("carrito.anadir.lbl.cantidad"));
-        btnAceptar.setText(mensajes.get("carrito.anadir.btn.aceptar"));
-        btnLimpiar.setText(mensajes.get("carrito.anadir.btn.limpiar"));
+        DatosDelProducto.setText(mensajes.get("producto.view.anadir.titulo"));
+        Codigo.setText(mensajes.get("producto.view.anadir.codigo"));
+        Nombre.setText(mensajes.get("producto.view.anadir.nombre"));
+        Precio.setText(mensajes.get("producto.view.anadir.precio"));
+        Cantidad.setText(mensajes.get("carrito.anadir.lbl.cantidad"));
+        btnBuscar.setText(mensajes.get("producto.view.modificar.buscar"));
+        btnAñadir.setText(mensajes.get("carrito.anadir.btn.aceptar"));
+        btnGuardar.setText(mensajes.get("usuario.view.cambiarContraseña.guardar"));
+        btnLimpiar.setText(mensajes.get("producto.view.anadir.limpiar"));
+        lblSubtotal.setText(mensajes.get("carrito.subtotal"));
+        lblIva.setText(mensajes.get("carrito.iva"));
+        lblTotal.setText(mensajes.get("carrito.listar.tabla.column.total"));
+
+        tableModel.setColumnIdentifiers(new Object[]{
+                mensajes.get("producto.listar.tabla.column.codigo"),
+                mensajes.get("producto.listar.tabla.column.nombre"),
+                mensajes.get("carrito.listar.tabla.column.cantidad"),
+                "Subtotal"
+        });
     }
 
-    public String getCodigo() {
-        return txtCodigo.getText();
-    }
+    // --- GETTERS QUE FALTABAN ---
+    public JButton getBtnBuscar() { return btnBuscar; }
+    public JButton getBtnAnadir() { return btnAñadir; }
+    public JButton getBtnGuardar() { return btnGuardar; }
+    public JButton getBtnLimpiar() { return btnLimpiar; }
+    public JTextField getTxtCantidad() { return txtCantidad; }
+    // --- FIN DE GETTERS FALTANTES ---
 
-    public String getCantidad() {
-        return txtCantidad.getText();
-    }
+    public String getCodigo() { return txtCodigo.getText().trim(); }
+    public JTextField getTxtCodigo() { return txtCodigo; }
+    public JTextField getTxtNombre() { return txtNombre; }
+    public JTextField getTxtPrecio() { return txtPrecio; }
+    public JTextField getTxtSubtotal() { return txtSubtotal; }
+    public JTextField getTxtIva() { return txtIva; }
+    public JTextField getTxtTotal() { return txtTotal; }
+    public DefaultTableModel getTableModel() { return tableModel; }
 
-    public JButton getBtnAceptar() {
-        return btnAceptar;
-    }
-
-    public JButton getBtnLimpiar() {
-        return btnLimpiar;
-    }
-
-    public JTextField getTxtCodigo() {
-        return txtCodigo;
-    }
-
-    public JTextField getTxtCantidad() {
-        return txtCantidad;
-    }
-
-    public void mostrarMensaje(String clave) {
-        JOptionPane.showMessageDialog(this, mensajes.get(clave));
+    public void mostrarMensaje(String mensaje) {
+        JOptionPane.showMessageDialog(this, mensaje);
     }
 
     public void limpiarCampos() {
         txtCodigo.setText("");
+        txtNombre.setText("");
+        txtPrecio.setText("");
         txtCantidad.setText("");
+        txtSubtotal.setText("");
+        txtIva.setText("");
+        txtTotal.setText("");
+        if (tableModel != null) {
+            tableModel.setRowCount(0);
+        }
     }
 }
