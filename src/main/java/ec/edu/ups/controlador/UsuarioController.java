@@ -7,6 +7,10 @@ import ec.edu.ups.vista.InicioDeSesion.*;
 import ec.edu.ups.vista.LoginView;
 import ec.edu.ups.MenuPrincipalView;
 import ec.edu.ups.vista.Usuario.*;
+import ec.edu.ups.util.CedulaValidator; // Importado previamente
+import ec.edu.ups.util.PasswordValidator; // Importar la clase PasswordValidator
+import ec.edu.ups.excepciones.ValidacionException; // Importado previamente
+
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableModel;
@@ -21,8 +25,8 @@ public class UsuarioController {
 
     private final UsuarioDAO usuarioDAO;
     private final LoginView loginView;
-    private final RegistrarUsuarioView registrarFrameView; // Este es el JFrame de registro inicial
-    private final RegistroView registrarInternalView; // Este es el JInternalFrame de registro
+    private final RegistrarUsuarioView registrarFrameView;
+    private final RegistroView registrarInternalView;
     private final ListarUsuarioView listarView;
     private final EliminarUsuarioView eliminarView;
     private final ActualizarUsuarioView actualizarView;
@@ -30,15 +34,14 @@ public class UsuarioController {
     private final MensajeInternacionalizacionHandler mensajeHandler;
     private Usuario usuarioActual;
 
-    // AÑADIR 'RegistroView internalRegView' al constructor
     public UsuarioController(UsuarioDAO uDAO, LoginView lV, RegistrarUsuarioView rV,
                              ListarUsuarioView liV, EliminarUsuarioView dV, ActualizarUsuarioView upV,
                              MenuPrincipalView pV, MensajeInternacionalizacionHandler msg,
-                             RegistroView internalRegView) { // Nuevo parámetro
+                             RegistroView internalRegView) {
         this.usuarioDAO = uDAO;
         this.loginView = lV;
         this.registrarFrameView = rV;
-        this.registrarInternalView = internalRegView; // Asignar la instancia de RegistroView
+        this.registrarInternalView = internalRegView;
         this.listarView = liV;
         this.eliminarView = dV;
         this.actualizarView = upV;
@@ -52,12 +55,22 @@ public class UsuarioController {
         loginView.getBtnRegistrarse().addActionListener(e -> abrirRegistro());
         loginView.getBtnOlvidar().addActionListener(e -> abrirRecuperacion());
 
-        // Eventos para el JFrame de registro inicial (RegistrarUsuarioView)
-        registrarFrameView.getRegistrarButton().addActionListener(e -> registrarUsuario());
+        registrarFrameView.getRegistrarButton().addActionListener(e -> {
+            try {
+                registrarUsuario();
+            } catch (ValidacionException ex) {
+                registrarFrameView.mostrarMensaje(ex.getMessage());
+            }
+        });
         registrarFrameView.getCancelarButton().addActionListener(e -> cancelarRegistro());
 
-        // Eventos para el JInternalFrame de registro (RegistroView)
-        registrarInternalView.getBtnCrear().addActionListener(e -> registrarUsuarioInterno());
+        registrarInternalView.getBtnCrear().addActionListener(e -> {
+            try {
+                registrarUsuarioInterno();
+            } catch (ValidacionException ex) {
+                registrarInternalView.mostrarMensaje(ex.getMessage());
+            }
+        });
         registrarInternalView.getBtnCancelar().addActionListener(e -> cancelarRegistroInterno());
 
         listarView.getBtnBuscar().addActionListener(e -> buscarUsuarios());
@@ -115,19 +128,25 @@ public class UsuarioController {
         }
     }
 
-    // Método para registrar usuario desde el JFrame de registro inicial
-    private void registrarUsuario() {
-        if (!registrarFrameView.validarCampos()) {
-            return;
-        }
+    private void registrarUsuario() throws ValidacionException {
+        registrarFrameView.validarCampos(); // Valida campos obligatorios, formatos, etc.
 
         String username = registrarFrameView.getTextususario().getText().trim();
-        if (usuarioDAO.buscarPorUsername(username) != null) {
-            registrarFrameView.mostrarMensaje("El nombre de usuario ya existe. Por favor, elija otro.");
-            return;
+        // Validación de cédula
+        if (!CedulaValidator.isValidCedula(username)) {
+            throw new ValidacionException("La cédula ingresada como usuario no es válida.");
         }
 
         String pwd1 = new String(registrarFrameView.getPasswordcontrasena().getPassword());
+        // Validación de contraseña segura
+        if (!PasswordValidator.isValidPassword(pwd1)) {
+            throw new ValidacionException("La contraseña no cumple los requisitos de seguridad: mínimo 6 caracteres, al menos una mayúscula, una minúscula y uno de '@', '_', '-'.");
+        }
+
+        if (usuarioDAO.buscarPorUsername(username) != null) {
+            throw new ValidacionException("El nombre de usuario (cédula) ya existe. Por favor, elija otro.");
+        }
+
 
         List<PreguntaSeguridad> preguntas = new ArrayList<>();
         preguntas.add(new PreguntaSeguridad(registrarFrameView.getPreguntasIdsSeleccionadas().get(0), registrarFrameView.getRespuesta1()));
@@ -154,18 +173,24 @@ public class UsuarioController {
     }
 
 
-    private void registrarUsuarioInterno() {
-        if (!registrarInternalView.validarCampos()) { // Asumiendo que RegistroView tiene un método validarCampos()
-            return;
-        }
+    private void registrarUsuarioInterno() throws ValidacionException {
+        registrarInternalView.validarCampos(); // Valida campos obligatorios, formatos, etc.
 
         String username = registrarInternalView.getTxtUsuario().getText().trim();
-        if (usuarioDAO.buscarPorUsername(username) != null) {
-            registrarInternalView.mostrarMensaje("El nombre de usuario ya existe. Por favor, elija otro.");
-            return;
+        // Validación de cédula
+        if (!CedulaValidator.isValidCedula(username)) {
+            throw new ValidacionException("La cédula ingresada como usuario no es válida.");
         }
 
         String pwd1 = new String(registrarInternalView.getTxtPassword().getPassword());
+        // Validación de contraseña segura
+        if (!PasswordValidator.isValidPassword(pwd1)) {
+            throw new ValidacionException("La contraseña no cumple los requisitos de seguridad: mínimo 6 caracteres, al menos una mayúscula, una minúscula y uno de '@', '_', '-'.");
+        }
+
+        if (usuarioDAO.buscarPorUsername(username) != null) {
+            throw new ValidacionException("El nombre de usuario (cédula) ya existe. Por favor, elija otro.");
+        }
 
 
         List<PreguntaSeguridad> preguntas = new ArrayList<>();
@@ -175,33 +200,28 @@ public class UsuarioController {
             preguntas.add(new PreguntaSeguridad(registrarInternalView.getPreguntasIdsSeleccionadas().get(1), registrarInternalView.getTxtRespuesta2().getText().trim()));
             preguntas.add(new PreguntaSeguridad(registrarInternalView.getPreguntasIdsSeleccionadas().get(2), registrarInternalView.getTxtRespuesta3().getText().trim()));
         } else {
-            // Manejo si no hay preguntas de seguridad seleccionadas o no están expuestas correctamente
-            registrarInternalView.mostrarMensaje("Debe seleccionar y responder las preguntas de seguridad.");
-            return;
+            throw new ValidacionException("Debe seleccionar y responder las preguntas de seguridad.");
         }
 
-        // Obtener la fecha de nacimiento de los JSpinners en RegistroView
         int dia = (Integer) registrarInternalView.getSpnDia().getValue();
         int mes = (Integer) registrarInternalView.getSpnMes().getValue();
         int anio = (Integer) registrarInternalView.getSpnAño().getValue();
         String fechaNacimiento = String.format("%02d/%02d/%04d", dia, mes, anio);
 
-
         Usuario nuevo = new Usuario(username, pwd1,
                 registrarInternalView.getTxtNombresComp().getText().trim(),
                 registrarInternalView.getTxtCorreo().getText().trim(),
                 registrarInternalView.getTxtTelefono().getText().trim(),
-                fechaNacimiento, preguntas); // Usar la fecha formateada
+                fechaNacimiento, preguntas);
 
         usuarioDAO.crear(nuevo);
         registrarInternalView.mostrarMensaje("Usuario registrado con éxito.");
         cancelarRegistroInterno();
     }
 
-    // NUEVO MÉTODO: Para cancelar el registro desde el JInternalFrame (RegistroView)
     private void cancelarRegistroInterno() {
         registrarInternalView.limpiarCampos();
-        registrarInternalView.dispose(); // Cierra la ventana interna
+        registrarInternalView.dispose();
     }
 
 
@@ -214,6 +234,11 @@ public class UsuarioController {
         if (ok) {
             String nPwd = JOptionPane.showInputDialog(recuperarDialog, "Ingrese la nueva contraseña:");
             if (nPwd != null && !nPwd.trim().isEmpty()) {
+                // Validación de contraseña segura al recuperar/cambiar
+                if (!PasswordValidator.isValidPassword(nPwd)) {
+                    recuperarDialog.mostrarMensaje("La nueva contraseña no cumple los requisitos de seguridad: mínimo 6 caracteres, al menos una mayúscula, una minúscula y uno de '@', '_', '-'.");
+                    return; // No actualiza si la contraseña no es válida
+                }
                 u.setContrasenia(nPwd);
                 usuarioDAO.actualizar(u);
                 recuperarDialog.mostrarMensaje("Contraseña actualizada.");
@@ -311,13 +336,19 @@ public class UsuarioController {
         String pass1 = new String(actualizarView.getTxtPassword().getPassword());
         String pass2 = new String(actualizarView.getPasswordconfcontrasenia().getPassword());
 
-        if (pass1.isEmpty() || pass2.isEmpty()) {
-            actualizarView.mostrarMensaje("Los campos de contraseña no pueden estar vacíos.");
-            return;
-        }
-
-        if (!pass1.equals(pass2)) {
-            actualizarView.mostrarMensaje("Las contraseñas no coinciden.");
+        // Validar contraseñas al actualizar también
+        try {
+            if (pass1.isEmpty() || pass2.isEmpty()) {
+                throw new ValidacionException("Los campos de contraseña no pueden estar vacíos.");
+            }
+            if (!pass1.equals(pass2)) {
+                throw new ValidacionException("Las contraseñas no coinciden.");
+            }
+            if (!PasswordValidator.isValidPassword(pass1)) {
+                throw new ValidacionException("La nueva contraseña no cumple los requisitos de seguridad: mínimo 6 caracteres, al menos una mayúscula, una minúscula y uno de '@', '_', '-'.");
+            }
+        } catch (ValidacionException ex) {
+            actualizarView.mostrarMensaje(ex.getMessage());
             return;
         }
 
@@ -337,7 +368,7 @@ public class UsuarioController {
             registrarFrameView.actualizarIdioma(mensajeHandler);
         }
         if (registrarInternalView != null) {
-            registrarInternalView.actualizarIdioma(); // Llama al método para actualizar el idioma
+            registrarInternalView.actualizarIdioma();
         }
     }
 }
