@@ -1,6 +1,7 @@
 package ec.edu.ups.vista.Usuario;
 
 import ec.edu.ups.util.MensajeInternacionalizacionHandler;
+import ec.edu.ups.excepciones.ValidacionException; // Importar la nueva excepción
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -57,6 +58,17 @@ public class RegistroView extends JInternalFrame {
         setClosable(true); // Para que aparezca la 'X' de cerrar
         setIconifiable(true);
         setResizable(true);
+
+        // Inicializar Spinners con modelos si no lo haces en el .form
+        if (spnDia != null) {
+            spnDia.setModel(new SpinnerNumberModel(1, 1, 31, 1));
+        }
+        if (spnMes != null) {
+            spnMes.setModel(new SpinnerNumberModel(1, 1, 12, 1));
+        }
+        if (spnAño != null) {
+            spnAño.setModel(new SpinnerNumberModel(2000, 1900, 2025, 1)); // Ajusta los años según necesidad
+        }
 
         actualizarIdioma();
         cargarPreguntas();
@@ -116,48 +128,59 @@ public class RegistroView extends JInternalFrame {
         return preguntasIdsSeleccionadas;
     }
 
-    // --- NUEVO MÉTODO DE VALIDACIÓN ---
-    public boolean validarCampos() {
+    // --- MÉTODO DE VALIDACIÓN MODIFICADO PARA LANZAR ValidacionException ---
+    public boolean validarCampos() throws ValidacionException {
         // Validación de campos vacíos
         if (txtNombresComp.getText().trim().isEmpty() ||
                 txtCorreo.getText().trim().isEmpty() ||
                 txtTelefono.getText().trim().isEmpty() ||
                 txtUsuario.getText().trim().isEmpty() ||
                 new String(txtPassword.getPassword()).isEmpty() ||
-                new String(txtConfirmarPassword != null ? txtConfirmarPassword.getPassword() : new char[0]).isEmpty() || // Manejar txtConfirmarPassword nulo
+                (txtConfirmarPassword != null && new String(txtConfirmarPassword.getPassword()).isEmpty()) || // Considerar si txtConfirmarPassword es null
                 txtRespuesta1.getText().trim().isEmpty() ||
                 txtRespuesta2.getText().trim().isEmpty() ||
                 txtRespuesta3.getText().trim().isEmpty()) {
-            mostrarMensaje("Todos los campos son obligatorios.");
-            return false;
+            throw new ValidacionException("Todos los campos son obligatorios.");
         }
 
         // Validación de formato de correo electrónico
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
         if (!Pattern.matches(emailRegex, txtCorreo.getText().trim())) {
-            mostrarMensaje("El formato del correo electrónico no es válido.");
-            return false;
+            throw new ValidacionException("El formato del correo electrónico no es válido.");
         }
 
         // Validación de teléfono (solo números)
         if (!txtTelefono.getText().trim().matches("\\d+")) {
-            mostrarMensaje("El teléfono solo debe contener números.");
-            return false;
+            throw new ValidacionException("El teléfono solo debe contener números.");
         }
 
         // Validación de contraseñas coincidentes
         String p1 = new String(txtPassword.getPassword());
         String p2 = (txtConfirmarPassword != null) ? new String(txtConfirmarPassword.getPassword()) : "";
         if (!p1.equals(p2)) {
-            mostrarMensaje("Las contraseñas no coinciden.");
-            return false;
+            throw new ValidacionException("Las contraseñas no coinciden.");
         }
 
         // Validación de fecha de nacimiento (simplificada, solo que no estén vacíos los spinners)
-        // Puedes añadir validaciones más robustas si lo necesitas (ej. rango de años, días válidos para el mes)
         if (spnDia.getValue() == null || spnMes.getValue() == null || spnAño.getValue() == null) {
-            mostrarMensaje("La fecha de nacimiento es obligatoria.");
-            return false;
+            throw new ValidacionException("La fecha de nacimiento es obligatoria.");
+        }
+
+        // Puedes añadir aquí validaciones de rango de fechas si lo necesitas
+        try {
+            int dia = (Integer) spnDia.getValue();
+            int mes = (Integer) spnMes.getValue();
+            int anio = (Integer) spnAño.getValue();
+            // Comprobación básica de fecha (ej. no día 31 en febrero)
+            if (mes == 2 && dia > 29) { // Febrero tiene máximo 29 días en bisiesto
+                throw new ValidacionException("Fecha de nacimiento inválida para Febrero.");
+            } else if ((mes == 4 || mes == 6 || mes == 9 || mes == 11) && dia > 30) { // Meses de 30 días
+                throw new ValidacionException("Fecha de nacimiento inválida para el mes seleccionado.");
+            }
+            // Puedes añadir más lógica para años bisiestos si es muy crítico.
+
+        } catch (ClassCastException | NullPointerException e) {
+            throw new ValidacionException("Formato de fecha de nacimiento incorrecto.");
         }
 
 

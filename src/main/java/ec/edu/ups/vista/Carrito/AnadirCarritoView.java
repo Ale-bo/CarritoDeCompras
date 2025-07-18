@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
 public class AnadirCarritoView extends JInternalFrame {
 
     private JPanel panelPrincipal;
-    private JTextField txtCodigo;
+    private JTextField txtCodigo; // Este es el código del producto, no del carrito
     private JTextField txtCantidad;
     private JButton btnGuardar;
     private JButton btnLimpiar;
@@ -19,7 +19,7 @@ public class AnadirCarritoView extends JInternalFrame {
     private JLabel Codigo;
     private JLabel Precio;
     private JLabel Cantidad;
-    private JButton btnBuscar;// Note: The variable is btnAnadir (with 'n')
+    private JButton btnBuscar;
     private JTextField txtNombre;
     private JTextField txtPrecio;
     private JTable tableCarrito;
@@ -31,6 +31,13 @@ public class AnadirCarritoView extends JInternalFrame {
     private JLabel lblSubtotal;
     private JLabel lblIva;
     private JLabel lblTotal;
+
+    // --- CAMPOS PARA EL CÓDIGO Y FECHA DEL CARRITO ---
+    private JTextField txtCodigoCarrito;
+    private JLabel lblCodigoCarrito;
+    private JTextField txtFecha; // <-- NUEVO: Campo para la fecha del carrito
+    private JLabel lblFecha; // <-- NUEVO: Etiqueta para la fecha del carrito
+    // --- FIN CAMPOS NUEVOS ---
 
     private CarritoController carritoController;
     private final MensajeInternacionalizacionHandler mensajes;
@@ -57,6 +64,12 @@ public class AnadirCarritoView extends JInternalFrame {
 
     public void actualizarIdioma() {
         setTitle(mensajes.get("carrito.anadir.titulo"));
+
+        // --- TEXTOS PARA CÓDIGO Y FECHA DEL CARRITO ---
+        if (lblCodigoCarrito != null) lblCodigoCarrito.setText(mensajes.get("carrito.anadir.lbl.codigocarrito") + ":");
+        if (lblFecha != null) lblFecha.setText(mensajes.get("carrito.anadir.lbl.fecha") + ":"); // <-- NUEVO: Texto para la etiqueta de fecha
+        // --- FIN TEXTOS NUEVOS ---
+
         DatosDelProducto.setText(mensajes.get("producto.view.anadir.titulo"));
         Codigo.setText(mensajes.get("producto.view.anadir.codigo"));
         Nombre.setText(mensajes.get("producto.view.anadir.nombre"));
@@ -78,16 +91,23 @@ public class AnadirCarritoView extends JInternalFrame {
         });
     }
 
-    // --- GETTERS QUE FALTABAN ---
+    // --- GETTERS PARA CÓDIGO Y FECHA DEL CARRITO ---
+    public JTextField getTxtCodigoCarrito() {
+        return txtCodigoCarrito;
+    }
+    public JTextField getTxtFecha() { // <-- NUEVO: Getter para el campo de fecha
+        return txtFecha;
+    }
+    // --- FIN GETTERS NUEVOS ---
+
     public JButton getBtnBuscar() { return btnBuscar; }
     public JButton getBtnAnadir() { return btnAñadir; }
     public JButton getBtnGuardar() { return btnGuardar; }
     public JButton getBtnLimpiar() { return btnLimpiar; }
     public JTextField getTxtCantidad() { return txtCantidad; }
-    // --- FIN DE GETTERS FALTANTES ---
 
-    public String getCodigo() { return txtCodigo.getText().trim(); }
-    public JTextField getTxtCodigo() { return txtCodigo; }
+    public String getCodigo() { return txtCodigo.getText().trim(); } // Este es el código del producto
+    public JTextField getTxtCodigo() { return txtCodigo; } // Este es el código del producto
     public JTextField getTxtNombre() { return txtNombre; }
     public JTextField getTxtPrecio() { return txtPrecio; }
     public JTextField getTxtSubtotal() { return txtSubtotal; }
@@ -99,16 +119,33 @@ public class AnadirCarritoView extends JInternalFrame {
         JOptionPane.showMessageDialog(this, mensaje);
     }
 
+    // --- MÉTODO limpiarCampos() modificado ---
     public void limpiarCampos() {
-        txtCodigo.setText("");
+        txtCodigo.setText(""); // Código del producto
         txtNombre.setText("");
         txtPrecio.setText("");
         txtCantidad.setText("");
         txtSubtotal.setText("");
         txtIva.setText("");
         txtTotal.setText("");
+
+        if (txtCodigoCarrito != null) {
+            txtCodigoCarrito.setText(""); // Limpiar campo de código del carrito
+        }
+        if (txtFecha != null) { // <-- NUEVO: Limpiar campo de fecha del carrito
+            txtFecha.setText("");
+        }
+
         if (tableModel != null) {
             tableModel.setRowCount(0);
         }
+    }
+
+    // Opcional: un método para limpiar solo los campos de producto si los de carrito son fijos
+    public void limpiarCamposProducto() {
+        txtCodigo.setText("");
+        txtNombre.setText("");
+        txtPrecio.setText("");
+        txtCantidad.setText("");
     }
 }
