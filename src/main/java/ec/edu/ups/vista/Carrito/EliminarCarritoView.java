@@ -30,68 +30,35 @@ public class EliminarCarritoView extends JInternalFrame {
         setIconifiable(true);
         setResizable(true);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setSize(600, 400);
-
-        comboFiltro.addItem(mensajes.get("carrito.eliminar.filtro.codigo"));
-        comboFiltro.addItem(mensajes.get("carrito.eliminar.filtro.nombre"));
+        pack();
 
         modelo = (DefaultTableModel) tablaResultado.getModel();
-        modelo.setColumnIdentifiers(new Object[]{
-                mensajes.get("carrito.eliminar.tabla.column.codigo"),
-                mensajes.get("carrito.eliminar.tabla.column.nombre"),
-                mensajes.get("carrito.eliminar.tabla.column.precio")
-        });
-
-        tablaResultado.setModel(modelo);
         actualizarIdioma();
     }
 
     public void setCarritoController(CarritoController carritoController) {
         this.carritoController = carritoController;
-        btnBuscar.addActionListener(e -> this.carritoController.buscarCarritoParaEliminar());
-        btnEliminar.addActionListener(e -> this.carritoController.eliminarCarritoSeleccionado());
     }
 
     public void actualizarIdioma() {
         setTitle(mensajes.get("carrito.eliminar.titulo"));
+        lblUsuario.setText(mensajes.get("carrito.eliminar.filtro.codigo"));
         btnBuscar.setText(mensajes.get("carrito.eliminar.btn.buscar"));
         btnEliminar.setText(mensajes.get("carrito.eliminar.btn.eliminar"));
 
-        comboFiltro.removeAllItems();
-        comboFiltro.addItem(mensajes.get("carrito.eliminar.filtro.codigo"));
-        comboFiltro.addItem(mensajes.get("carrito.eliminar.filtro.nombre"));
-
         modelo.setColumnIdentifiers(new Object[]{
-                mensajes.get("carrito.eliminar.tabla.column.codigo"),
-                mensajes.get("carrito.eliminar.tabla.column.nombre"),
-                mensajes.get("carrito.eliminar.tabla.column.precio")
+                mensajes.get("carrito.listar.tabla.column.codigo"),
+                mensajes.get("carrito.listar.tabla.column.fecha"),
+                mensajes.get("carrito.listar.tabla.column.total")
         });
     }
 
-    // Getters de componentes
-    public JComboBox<String> getFiltro() {
-        return comboFiltro;
-    }
-
-    public JTextField getTxtBusqueda() {
-        return txtBusqueda;
-    }
-
-    public JButton getBtnBuscar() {
-        return btnBuscar;
-    }
-
-    public JTable getTablaResultado() {
-        return tablaResultado;
-    }
-
-    public JButton getBtnEliminar() {
-        return btnEliminar;
-    }
-
-    public DefaultTableModel getModelResultado() {
-        return modelo;
-    }
+    public JComboBox<String> getFiltro() { return comboFiltro; }
+    public JTextField getTxtBusqueda() { return txtBusqueda; }
+    public JButton getBtnBuscar() { return btnBuscar; }
+    public JTable getTablaResultado() { return tablaResultado; }
+    public JButton getBtnEliminar() { return btnEliminar; }
+    public DefaultTableModel getModelResultado() { return modelo; }
 
     public void mostrarMensaje(String s) {
         JOptionPane.showMessageDialog(this, s);
