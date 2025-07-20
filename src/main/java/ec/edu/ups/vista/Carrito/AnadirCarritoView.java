@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
 public class AnadirCarritoView extends JInternalFrame {
 
     private JPanel panelPrincipal;
-    private JTextField txtCodigo;
+    private JTextField txtCodigo; // Este es el código del producto, no del carrito
     private JTextField txtCantidad;
     private JButton btnGuardar;
     private JButton btnLimpiar;
@@ -19,7 +19,7 @@ public class AnadirCarritoView extends JInternalFrame {
     private JLabel Codigo;
     private JLabel Precio;
     private JLabel Cantidad;
-    private JButton btnBuscar;// Note: The variable is btnAnadir (with 'n')
+    private JButton btnBuscar;
     private JTextField txtNombre;
     private JTextField txtPrecio;
     private JTable tableCarrito;
@@ -31,6 +31,12 @@ public class AnadirCarritoView extends JInternalFrame {
     private JLabel lblSubtotal;
     private JLabel lblIva;
     private JLabel lblTotal;
+
+    private JTextField txtCodigoCarrito;
+    private JTextField txtFecha;
+    private JLabel lblFecha;
+    private JLabel lblCodigoCarro;
+
 
     private CarritoController carritoController;
     private final MensajeInternacionalizacionHandler mensajes;
@@ -57,6 +63,12 @@ public class AnadirCarritoView extends JInternalFrame {
 
     public void actualizarIdioma() {
         setTitle(mensajes.get("carrito.anadir.titulo"));
+
+        // --- TEXTOS PARA CÓDIGO Y FECHA DEL CARRITO ---
+        if (lblCodigoCarro != null) lblCodigoCarro.setText(mensajes.get("carrito.anadir.lbl.codigocarrito") + ":");
+        if (lblFecha != null) lblFecha.setText(mensajes.get("carrito.anadir.lbl.fecha") + ":"); // <-- NUEVO: Texto para la etiqueta de fecha
+        // --- FIN TEXTOS NUEVOS ---
+
         DatosDelProducto.setText(mensajes.get("producto.view.anadir.titulo"));
         Codigo.setText(mensajes.get("producto.view.anadir.codigo"));
         Nombre.setText(mensajes.get("producto.view.anadir.nombre"));
@@ -70,6 +82,7 @@ public class AnadirCarritoView extends JInternalFrame {
         lblIva.setText(mensajes.get("carrito.iva"));
         lblTotal.setText(mensajes.get("carrito.listar.tabla.column.total"));
 
+
         tableModel.setColumnIdentifiers(new Object[]{
                 mensajes.get("producto.listar.tabla.column.codigo"),
                 mensajes.get("producto.listar.tabla.column.nombre"),
@@ -78,13 +91,18 @@ public class AnadirCarritoView extends JInternalFrame {
         });
     }
 
-    // --- GETTERS QUE FALTABAN ---
+
+    public JTextField getTxtCodigoCarrito() {
+        return txtCodigoCarrito;
+    }
+    public JTextField getTxtFecha() { // <-- NUEVO: Getter para el campo de fecha
+        return txtFecha;
+    }
     public JButton getBtnBuscar() { return btnBuscar; }
     public JButton getBtnAnadir() { return btnAñadir; }
     public JButton getBtnGuardar() { return btnGuardar; }
     public JButton getBtnLimpiar() { return btnLimpiar; }
     public JTextField getTxtCantidad() { return txtCantidad; }
-    // --- FIN DE GETTERS FALTANTES ---
 
     public String getCodigo() { return txtCodigo.getText().trim(); }
     public JTextField getTxtCodigo() { return txtCodigo; }
@@ -99,6 +117,7 @@ public class AnadirCarritoView extends JInternalFrame {
         JOptionPane.showMessageDialog(this, mensaje);
     }
 
+
     public void limpiarCampos() {
         txtCodigo.setText("");
         txtNombre.setText("");
@@ -107,6 +126,14 @@ public class AnadirCarritoView extends JInternalFrame {
         txtSubtotal.setText("");
         txtIva.setText("");
         txtTotal.setText("");
+
+        if (txtCodigoCarrito != null) {
+            txtCodigoCarrito.setText("");
+        }
+        if (txtFecha != null) {
+            txtFecha.setText("");
+        }
+
         if (tableModel != null) {
             tableModel.setRowCount(0);
         }

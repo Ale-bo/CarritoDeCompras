@@ -67,5 +67,10 @@ public class ListarProductoView extends JInternalFrame {
     public DefaultTableModel getModelo() {
         return modelo;
     }
+
+    public void mostrarMensaje(String mensaje) {
+        JOptionPane.showMessageDialog(this, mensaje);
+    }
+
 }
 
