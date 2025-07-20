@@ -32,12 +32,11 @@ public class AnadirCarritoView extends JInternalFrame {
     private JLabel lblIva;
     private JLabel lblTotal;
 
-    // --- CAMPOS PARA EL CÓDIGO Y FECHA DEL CARRITO ---
     private JTextField txtCodigoCarrito;
-    private JLabel lblCodigoCarrito;
-    private JTextField txtFecha; // <-- NUEVO: Campo para la fecha del carrito
-    private JLabel lblFecha; // <-- NUEVO: Etiqueta para la fecha del carrito
-    // --- FIN CAMPOS NUEVOS ---
+    private JTextField txtFecha;
+    private JLabel lblFecha;
+    private JLabel lblCodigoCarro;
+
 
     private CarritoController carritoController;
     private final MensajeInternacionalizacionHandler mensajes;
@@ -66,7 +65,7 @@ public class AnadirCarritoView extends JInternalFrame {
         setTitle(mensajes.get("carrito.anadir.titulo"));
 
         // --- TEXTOS PARA CÓDIGO Y FECHA DEL CARRITO ---
-        if (lblCodigoCarrito != null) lblCodigoCarrito.setText(mensajes.get("carrito.anadir.lbl.codigocarrito") + ":");
+        if (lblCodigoCarro != null) lblCodigoCarro.setText(mensajes.get("carrito.anadir.lbl.codigocarrito") + ":");
         if (lblFecha != null) lblFecha.setText(mensajes.get("carrito.anadir.lbl.fecha") + ":"); // <-- NUEVO: Texto para la etiqueta de fecha
         // --- FIN TEXTOS NUEVOS ---
 
@@ -83,6 +82,7 @@ public class AnadirCarritoView extends JInternalFrame {
         lblIva.setText(mensajes.get("carrito.iva"));
         lblTotal.setText(mensajes.get("carrito.listar.tabla.column.total"));
 
+
         tableModel.setColumnIdentifiers(new Object[]{
                 mensajes.get("producto.listar.tabla.column.codigo"),
                 mensajes.get("producto.listar.tabla.column.nombre"),
@@ -91,23 +91,21 @@ public class AnadirCarritoView extends JInternalFrame {
         });
     }
 
-    // --- GETTERS PARA CÓDIGO Y FECHA DEL CARRITO ---
+
     public JTextField getTxtCodigoCarrito() {
         return txtCodigoCarrito;
     }
     public JTextField getTxtFecha() { // <-- NUEVO: Getter para el campo de fecha
         return txtFecha;
     }
-    // --- FIN GETTERS NUEVOS ---
-
     public JButton getBtnBuscar() { return btnBuscar; }
     public JButton getBtnAnadir() { return btnAñadir; }
     public JButton getBtnGuardar() { return btnGuardar; }
     public JButton getBtnLimpiar() { return btnLimpiar; }
     public JTextField getTxtCantidad() { return txtCantidad; }
 
-    public String getCodigo() { return txtCodigo.getText().trim(); } // Este es el código del producto
-    public JTextField getTxtCodigo() { return txtCodigo; } // Este es el código del producto
+    public String getCodigo() { return txtCodigo.getText().trim(); }
+    public JTextField getTxtCodigo() { return txtCodigo; }
     public JTextField getTxtNombre() { return txtNombre; }
     public JTextField getTxtPrecio() { return txtPrecio; }
     public JTextField getTxtSubtotal() { return txtSubtotal; }
@@ -119,9 +117,9 @@ public class AnadirCarritoView extends JInternalFrame {
         JOptionPane.showMessageDialog(this, mensaje);
     }
 
-    // --- MÉTODO limpiarCampos() modificado ---
+
     public void limpiarCampos() {
-        txtCodigo.setText(""); // Código del producto
+        txtCodigo.setText("");
         txtNombre.setText("");
         txtPrecio.setText("");
         txtCantidad.setText("");
@@ -130,22 +128,14 @@ public class AnadirCarritoView extends JInternalFrame {
         txtTotal.setText("");
 
         if (txtCodigoCarrito != null) {
-            txtCodigoCarrito.setText(""); // Limpiar campo de código del carrito
+            txtCodigoCarrito.setText("");
         }
-        if (txtFecha != null) { // <-- NUEVO: Limpiar campo de fecha del carrito
+        if (txtFecha != null) {
             txtFecha.setText("");
         }
 
         if (tableModel != null) {
             tableModel.setRowCount(0);
         }
-    }
-
-    // Opcional: un método para limpiar solo los campos de producto si los de carrito son fijos
-    public void limpiarCamposProducto() {
-        txtCodigo.setText("");
-        txtNombre.setText("");
-        txtPrecio.setText("");
-        txtCantidad.setText("");
     }
 }

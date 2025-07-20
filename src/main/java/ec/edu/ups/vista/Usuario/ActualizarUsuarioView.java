@@ -69,8 +69,10 @@ public class ActualizarUsuarioView extends JInternalFrame {
 
     public void limpiarCampos() {
         txtUsername.setText("");
+        txtUsername.setEnabled(true);
         txtPassword.setText("");
         passwordconfcontrasenia.setText("");
         tblUsuarios.clearSelection();
+
     }
 }

@@ -84,7 +84,7 @@ public class ProductoController {
                 actualizarView.limpiarCampos();
             }
         });
-        actualizarView.getTableProductos().getSelectionModel().addListSelectionListener(this::seleccionarProductoParaActualizar);
+
     }
 
     public void crearProducto() {
@@ -110,7 +110,16 @@ public class ProductoController {
     public void listarProductos() {
         DefaultTableModel model = listarView.getModelo();
         model.setRowCount(0);
-        productoDAO.listarTodos().forEach(p -> model.addRow(new Object[]{p.getCodigo(), p.getNombre(), p.getPrecio()}));
+
+        List<Producto> lista = productoDAO.listarTodos();
+
+        if (lista.isEmpty()) {
+            listarView.mostrarMensaje("No existe ningún producto registrado.");
+        } else {
+            for (Producto p : lista) {
+                model.addRow(new Object[]{p.getCodigo(), p.getNombre(), p.getPrecio()});
+            }
+        }
     }
 
     public void cargarListadoFiltrado() {
@@ -138,18 +147,6 @@ public class ProductoController {
         }
     }
 
-    private void seleccionarProductoParaActualizar(ListSelectionEvent e) {
-        if (!e.getValueIsAdjusting()) {
-            int fila = actualizarView.getTableProductos().getSelectedRow();
-            if (fila != -1) {
-                DefaultTableModel model = actualizarView.getTableModel();
-                actualizarView.getTxtCodigo().setText(model.getValueAt(fila, 0).toString());
-                actualizarView.getTxtCodigo().setEnabled(false);
-                actualizarView.getTxtNombre().setText(model.getValueAt(fila, 1).toString());
-                actualizarView.getTxtPrecio().setText(model.getValueAt(fila, 2).toString());
-            }
-        }
-    }
 
     public void actualizarProducto() {
         try {

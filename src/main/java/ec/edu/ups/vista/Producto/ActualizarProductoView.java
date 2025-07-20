@@ -20,11 +20,10 @@ public class ActualizarProductoView extends JInternalFrame {
     private JButton btnBuscar;
     private JButton btnActualizar;
     private JButton btnCancelar;
-    private JTable tblProductos;
-    private DefaultTableModel modelo;
     private JLabel lblCodigo;
     private JLabel lblNombre;
     private JLabel lblPrecio;
+    private JLabel lbldatos;
 
     public ActualizarProductoView(MensajeInternacionalizacionHandler mensajeHandler) {
         super("", true, true, true, true);
@@ -37,7 +36,6 @@ public class ActualizarProductoView extends JInternalFrame {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         pack();
 
-        modelo = (DefaultTableModel) tblProductos.getModel();
         actualizarIdioma();
     }
 
@@ -54,11 +52,6 @@ public class ActualizarProductoView extends JInternalFrame {
         btnActualizar.setText(mensajeHandler.get("producto.view.modificar.actualizar"));
         btnCancelar.setText(mensajeHandler.get("producto.view.modificar.cancelar"));
 
-        modelo.setColumnIdentifiers(new Object[]{
-                mensajeHandler.get("producto.view.modificar.codigo"),
-                mensajeHandler.get("producto.view.modificar.nombre"),
-                mensajeHandler.get("producto.view.modificar.precio")
-        });
     }
 
     public JButton getBtnBuscar() {
@@ -71,14 +64,6 @@ public class ActualizarProductoView extends JInternalFrame {
 
     public JButton getBtnCancelar() {
         return btnCancelar;
-    }
-
-    public JTable getTableProductos() {
-        return tblProductos;
-    }
-
-    public DefaultTableModel getTableModel() {
-        return modelo;
     }
 
     public JTextField getTxtCodigo() {
@@ -98,8 +83,6 @@ public class ActualizarProductoView extends JInternalFrame {
         txtCodigo.setEnabled(true);
         txtNombre.setText("");
         txtPrecio.setText("");
-        tblProductos.clearSelection();
-        ((DefaultTableModel)tblProductos.getModel()).setRowCount(0);
     }
 
     public void mostrarMensaje(String msg) {

@@ -63,6 +63,7 @@ public class EliminarUsuarioView extends JInternalFrame {
 
     public void limpiarCampos() {
         txtBuscar.setText("");
+
         if (cbxFiltro != null) cbxFiltro.setSelectedIndex(0);
     }
 }

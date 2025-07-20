@@ -42,9 +42,9 @@ public class RegistroView extends JInternalFrame {
     private JSpinner spnDia; // Asumiendo que es un JSpinner
     private JSpinner spnMes; // Asumiendo que es un JSpinner
     private JSpinner spnAño; // Asumiendo que es un JSpinner
-    private JPasswordField txtConfirmarPassword; // Añadir este campo si tienes un password de confirmación en el .form
+    private JLabel lblFechaIngreso;
 
-    // Campo para IDs de preguntas seleccionadas
+
     private final List<Integer> preguntasIdsSeleccionadas = new ArrayList<>();
 
     public RegistroView(MensajeInternacionalizacionHandler mensajeHandler) {
@@ -55,21 +55,9 @@ public class RegistroView extends JInternalFrame {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         pack();
         setResizable(false);
-        setClosable(true); // Para que aparezca la 'X' de cerrar
+        setClosable(true);
         setIconifiable(true);
         setResizable(true);
-
-        // Inicializar Spinners con modelos si no lo haces en el .form
-        if (spnDia != null) {
-            spnDia.setModel(new SpinnerNumberModel(1, 1, 31, 1));
-        }
-        if (spnMes != null) {
-            spnMes.setModel(new SpinnerNumberModel(1, 1, 12, 1));
-        }
-        if (spnAño != null) {
-            spnAño.setModel(new SpinnerNumberModel(2000, 1900, 2025, 1)); // Ajusta los años según necesidad
-        }
-
         actualizarIdioma();
         cargarPreguntas();
     }
@@ -91,8 +79,8 @@ public class RegistroView extends JInternalFrame {
         if (btnCrear != null) btnCrear.setText(mensajeHandler.get("usuario.view.registrar.btn.crear"));
         if (btnCancelar != null) btnCancelar.setText(mensajeHandler.get("usuario.view.registrar.btn.cancelar"));
 
-        cargarPreguntas(); // Vuelve a cargar las preguntas con el nuevo idioma
-        SwingUtilities.updateComponentTreeUI(this); // Fuerza la actualización de la UI
+        cargarPreguntas();
+        SwingUtilities.updateComponentTreeUI(this);
     }
 
     private void cargarPreguntas() {
@@ -102,6 +90,7 @@ public class RegistroView extends JInternalFrame {
             ids.add(i);
             textos.add(mensajeHandler.get("preguntas.seguridad." + i));
         }
+
         List<Integer> indices = new ArrayList<>();
         for (int i = 0; i < 10; i++) indices.add(i);
         Collections.shuffle(indices);
@@ -128,63 +117,53 @@ public class RegistroView extends JInternalFrame {
         return preguntasIdsSeleccionadas;
     }
 
-    // --- MÉTODO DE VALIDACIÓN MODIFICADO PARA LANZAR ValidacionException ---
     public boolean validarCampos() throws ValidacionException {
-        // Validación de campos vacíos
+
         if (txtNombresComp.getText().trim().isEmpty() ||
                 txtCorreo.getText().trim().isEmpty() ||
                 txtTelefono.getText().trim().isEmpty() ||
                 txtUsuario.getText().trim().isEmpty() ||
                 new String(txtPassword.getPassword()).isEmpty() ||
-                (txtConfirmarPassword != null && new String(txtConfirmarPassword.getPassword()).isEmpty()) || // Considerar si txtConfirmarPassword es null
                 txtRespuesta1.getText().trim().isEmpty() ||
                 txtRespuesta2.getText().trim().isEmpty() ||
                 txtRespuesta3.getText().trim().isEmpty()) {
             throw new ValidacionException("Todos los campos son obligatorios.");
         }
 
-        // Validación de formato de correo electrónico
+
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
         if (!Pattern.matches(emailRegex, txtCorreo.getText().trim())) {
             throw new ValidacionException("El formato del correo electrónico no es válido.");
         }
 
-        // Validación de teléfono (solo números)
         if (!txtTelefono.getText().trim().matches("\\d+")) {
             throw new ValidacionException("El teléfono solo debe contener números.");
         }
 
-        // Validación de contraseñas coincidentes
-        String p1 = new String(txtPassword.getPassword());
-        String p2 = (txtConfirmarPassword != null) ? new String(txtConfirmarPassword.getPassword()) : "";
-        if (!p1.equals(p2)) {
-            throw new ValidacionException("Las contraseñas no coinciden.");
-        }
 
-        // Validación de fecha de nacimiento (simplificada, solo que no estén vacíos los spinners)
+
         if (spnDia.getValue() == null || spnMes.getValue() == null || spnAño.getValue() == null) {
             throw new ValidacionException("La fecha de nacimiento es obligatoria.");
         }
 
-        // Puedes añadir aquí validaciones de rango de fechas si lo necesitas
         try {
             int dia = (Integer) spnDia.getValue();
             int mes = (Integer) spnMes.getValue();
             int anio = (Integer) spnAño.getValue();
-            // Comprobación básica de fecha (ej. no día 31 en febrero)
-            if (mes == 2 && dia > 29) { // Febrero tiene máximo 29 días en bisiesto
+
+            if (mes == 2 && dia > 29) {
                 throw new ValidacionException("Fecha de nacimiento inválida para Febrero.");
-            } else if ((mes == 4 || mes == 6 || mes == 9 || mes == 11) && dia > 30) { // Meses de 30 días
+            } else if ((mes == 4 || mes == 6 || mes == 9 || mes == 11) && dia > 30) {
                 throw new ValidacionException("Fecha de nacimiento inválida para el mes seleccionado.");
             }
-            // Puedes añadir más lógica para años bisiestos si es muy crítico.
+
 
         } catch (ClassCastException | NullPointerException e) {
             throw new ValidacionException("Formato de fecha de nacimiento incorrecto.");
         }
 
 
-        return true; // Si todo es correcto
+        return true;
     }
 
     // Métodos getters
@@ -208,8 +187,8 @@ public class RegistroView extends JInternalFrame {
     public JSpinner getSpnDia() { return spnDia; }
     public JSpinner getSpnMes() { return spnMes; }
     public JSpinner getSpnAño() { return spnAño; }
-    // Asumiendo que txtConfirmarPassword es el JPasswordField para confirmar contraseña
-    public JPasswordField getTxtConfirmarPassword() { return txtConfirmarPassword; }
+    public JLabel getLblFechaIngreso() { return lblFechaIngreso; }
+
 
 
     public void mostrarMensaje(String s) { JOptionPane.showMessageDialog(this, s); }
@@ -221,16 +200,15 @@ public class RegistroView extends JInternalFrame {
         if (txtTelefono != null) txtTelefono.setText("");
         if (txtUsuario != null) txtUsuario.setText("");
         if (txtPassword != null) txtPassword.setText("");
-        if (txtConfirmarPassword != null) txtConfirmarPassword.setText(""); // Limpiar campo de confirmación
         if (txtRespuesta1 != null) txtRespuesta1.setText("");
         if (txtRespuesta2 != null) txtRespuesta2.setText("");
         if (txtRespuesta3 != null) txtRespuesta3.setText("");
 
-        // Reiniciar spinners a un valor por defecto si es necesario, o al valor mínimo/máximo
+
         if (spnDia != null) spnDia.setValue(1);
         if (spnMes != null) spnMes.setValue(1);
-        if (spnAño != null) spnAño.setValue(2000); // O el año por defecto que prefieras
+        if (spnAño != null) spnAño.setValue(2000);
 
-        cargarPreguntas(); // Vuelve a cargar las preguntas aleatorias para restablecer
+        cargarPreguntas();
     }
 }
